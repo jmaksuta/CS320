@@ -12,12 +12,12 @@ Dr. Partridge
 
 # main internal method, processes the pattern, and gets a result.
 def get_palindrome(the_pattern):
-    end_index = get_middle_index(the_pattern)
+    middle_index = get_middle_index(the_pattern)
 
     index_of_removed_element = -1
     is_palindrome = True
 
-    for start_index in range(0, end_index):
+    for start_index in range(0, middle_index):
         end_index = len(the_pattern) - (start_index + 1)
         process_result = process_elements(the_pattern,
                                           start_index,
@@ -121,4 +121,18 @@ def find_palindrome(pattern):
 # print(find_palindrome(("t", "e", "s", "t", "e", "r")))
 
 # print(find_palindrome((3, 2, 1, 1, 2, 4, 3)))
+
 # print(find_palindrome((3, 2, 1, 1, 2, 4, 3)) == (3, 2, 1, 1, 2, 3))
+# print(find_palindrome((3, 2, 3)) == (3, 2, 3))
+# print(find_palindrome((1, 2, 3, 4, 5, 5, 4, 3, 2, 1)) == (1, 2, 3, 4, 5, 4, 3, 2, 1))
+# print(find_palindrome((3, 2)) == None)
+# print(find_palindrome(()) == None)
+# print(find_palindrome(('ab','a','b','cd','c','b','a')) == None)
+# print(find_palindrome(('ab','a','b','c','b','a')) == ('a','b','c','b','a'))
+# print(find_palindrome(('ab','a','b','c','c','b','a')) == ('a','b','c','c','b','a'))
+# print(find_palindrome(('ab','a','b','c','d','c','b','a')) == ('a','b','c','d','c','b','a'))
+# print(find_palindrome(('a','b','c','d','c','b','a','ab')) == ('a','b','c','d','c','b','a'))
+# print(find_palindrome(('a','b','c','d','c','b','ab','a')) == ('a','b','c','d','c','b','a'))
+# print(find_palindrome(('a','b','c','d','c','ab','b','a')) == ('a','b','c','d','c','b','a'))
+# print(find_palindrome(('a','b','c','d','ab','c','b','a')) == ('a','b','c','ab','c','b','a'))
+# print(find_palindrome(('a','b','c','ab','d','c','b','a')) == ('a','b','c','d','c','b','a'))
