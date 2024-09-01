@@ -1,3 +1,5 @@
+n,o,o,n
+'1','2','4','2','1'
 '1','2','3','2','1'
 None
 '1','2','4','2','1'
@@ -6,7 +8,7 @@ None
 3,2,1,1,2,3
 3,2,1,1,2,3
 3,2,3
-1,2,3,4,5,4,3,2,1
+1,2,3,4,5,5,4,3,2,1
 None
 None
 'a','b','c','b','a'
@@ -17,3 +19,16 @@ None
 'a','b','c','d','c','b','a'
 'a','b','c','ab','c','b','a'
 'a','b','c','d','c','b','a'
+None
+ab,cd,ef,g,ef,cd,ab
+ab,cd,ef,g,ef,cd,ab
+ab,cd,ef,g,ef,cd,ab
+ab,cd,ef,g,ef,cd,ab
+ab,cd,ef,g,ef,cd,ab
+ab,cd,ef,1,ef,cd,ab
+ab,cd,ef,g,ef,cd,ab
+ab,cd,ef,g,ef,cd,ab
+ab,cd,ef,g,ef,cd,ab
+None
+m,a,d,a,m,e,m,a,d,a,m
+n,o,o,n

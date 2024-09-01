@@ -1,3 +1,5 @@
+n,o,o,n
+'1','2','3','4','2','1'
 '1','2','3','2','1'
 '1','2'
 '1','2','3','4','2','1'
@@ -17,3 +19,16 @@
 'a','b','c','d','c','ab','b','a'
 'a','b','c','d','ab','c','b','a'
 'a','b','c','ab','d','c','b','a'
+a,b,c,d,e,f,g
+ab,cd,ef,g,ef,cd,ab
+1,ab,cd,ef,g,ef,cd,ab
+ab,1,cd,ef,g,ef,cd,ab
+ab,cd,1,ef,g,ef,cd,ab
+ab,cd,ef,1,g,ef,cd,ab
+ab,cd,ef,g,1,ef,cd,ab
+ab,cd,ef,g,ef,1,cd,ab
+ab,cd,ef,g,ef,cd,1,ab
+ab,cd,ef,g,ef,cd,ab,1
+ab,cd,ef,g,2,ef,cd,ab,1
+m,a,d,a,m,e,m,a,d,a,m
+n,o,o,n
