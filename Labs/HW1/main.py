@@ -1,11 +1,6 @@
 # Determine if a tuple can be made into a palindrome by removing exactly one
 # element
 
-# An example import. Delete or replace as desired. Be careful with what
-# libraries you use:
-# Non-default python libraries may not work in Zybooks.
-# import math
-
 # Subroutines if any, go here
 def get_palindrome(pattern):
     endIndex = get_middle_index(pattern)
@@ -28,12 +23,9 @@ def get_palindrome(pattern):
             break
 
     return get_result(pattern, isPalindrome, indexOfElementRemoved)
-    # if (isPalindrome):
-    #     result = removeElementFromTuple(pattern, indexOfElementRemoved)
-    # #make the palindrome and return it
-    # return result
 
 
+# calculates the middle index of the sequence.
 def get_middle_index(pattern):
     endIndex = int(len(pattern) / 2)
     isEven = len(pattern) % 2 == 0
@@ -46,7 +38,7 @@ def get_middle_index(pattern):
 def get_result(pattern, isPalindrome, indexToRemove):
     result = None
     if (isPalindrome):
-        result = pattern  # removeElementFromTuple(pattern, indexToRemove)
+        result = pattern
     return result
 
 
@@ -54,7 +46,6 @@ def removeElementFromTuple(pattern, indexToRemove):
     theList = list(pattern)
     if (indexToRemove != -1):
         theList.pop(indexToRemove)
-
     return tuple(theList)
 
 
@@ -91,35 +82,13 @@ def compare_elements(pattern, indexStart, indexEnd, indexOfElementRemoved):
     return (pattern, elementsMatch, indexOfElementRemoved)
 
 
-# Fill in find_palindrome
+# Finds a palindrome and returns None if none found, otherwise returns the
+# palindrome tuple.
 def find_palindrome(pattern):
     result = None
-# Your task is to write a routine: find_palindrome(pattern) which takes
-# a tuple and returns a tuple or None.
     if (len(pattern) > 2):
         result = get_palindrome(pattern)
     return result
-# The returned tuple must be a palindrome which results from removing just
-# one element from pattern.
-# So, for instance, if pattern was (3, 2, 1, 1, 2, 4, 3), the returned tuple
-# would be (3, 2, 1, 1, 2, 3).
-# If more than one element must be removed from the tuple to make a
-# palindrome, or a palindrome is not possible,
-# then find_palindrome() returns None.
-
-# A few special cases:
-
-# No trivial (single element) palindromes. The returned palindrome must be of
-# length 2 or longer. If pattern is too short to result in a palindrome of
-# length 2 or pattern is None, return None.
-# No throwing exceptions (they confuse zybooks). If there are other bad input
-# conditions not discussed here, return None.
-# No modifying elements in pattern. So if pattern is ("ab", "a", "a"), do not
-# return ("a", "a", "a").
-# No moving elements within pattern. The only permissible change to get a new
-# pattern is to remove one element.
-# pattern may already be a palindrome, in which case you need to see if a
-# there is a way to remove one element and get a new palindrome.
 
 # test code:
 # print(find_palindrome(("t", "e", "s", "t")))
