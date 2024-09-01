@@ -22,7 +22,7 @@ def get_palindrome(pattern):
         if not isPalindrome:
             break
 
-    return get_result(pattern, isPalindrome, indexOfElementRemoved)
+    return get_result(pattern, isPalindrome)
 
 
 # calculates the middle index of the sequence.
@@ -35,7 +35,7 @@ def get_middle_index(pattern):
     return endIndex
 
 
-def get_result(pattern, isPalindrome, indexToRemove):
+def get_result(pattern, isPalindrome):
     result = None
     if (isPalindrome):
         result = pattern
@@ -61,25 +61,35 @@ def compare_elements(pattern, indexStart, indexEnd, indexOfElementRemoved):
 
     startNext = pattern[indexStartNext]
     endNext = pattern[indexEndNext]
-    if (start == end):
-        # its still a palindrome
-        pass
-    elif (canRemove and startNext == end):
-        # its not a palindrome, but lets remove start and check startNext
-        # against end
-        indexOfElementRemoved = indexStart
-        pattern = removeElementFromTuple(pattern, indexOfElementRemoved)
-    elif (canRemove and endNext == start):
-        # its not a palindrome, but lets remove end and check endNext
-        # against start
-        indexOfElementRemoved = indexEnd
-        pattern = removeElementFromTuple(pattern, indexOfElementRemoved)
-    else:
-        # this is not a palindrome
-        elementsMatch = False
 
-    # print("start={s}, end={e}".format(s=start, e=end))
+    indexToRemove = get_index_to_remove(canRemove,
+                                        start,
+                                        end,
+                                        indexStart,
+                                        indexEnd,
+                                        startNext,
+                                        endNext)
+    canRemove = indexToRemove != -1
+    elementsMatch = matches(start, end) or canRemove
+    if (canRemove):
+        pattern = removeElementFromTuple(pattern, indexToRemove)
+        indexOfElementRemoved = indexToRemove
+
     return (pattern, elementsMatch, indexOfElementRemoved)
+
+
+def matches(start, end):
+    return (start == end)
+
+
+def get_index_to_remove(canRemove, start, end, indexStart,
+                        indexEnd, startNext, endNext):
+    indexToRemove = -1
+    if (canRemove and startNext == end):
+        indexToRemove = indexStart
+    elif (canRemove and endNext == start):
+        indexToRemove = indexEnd
+    return indexToRemove
 
 
 # Finds a palindrome and returns None if none found, otherwise returns the
@@ -89,6 +99,7 @@ def find_palindrome(pattern):
     if (len(pattern) > 2):
         result = get_palindrome(pattern)
     return result
+
 
 # test code:
 # print(find_palindrome(("t", "e", "s", "t")))
