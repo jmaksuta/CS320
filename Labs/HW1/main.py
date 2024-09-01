@@ -63,7 +63,7 @@ def remove_element_from_tuple(the_pattern, index_to_remove):
 def process_elements(the_pattern, start_index, end_index,
                      index_of_removed_element):
     can_remove = index_of_removed_element == -1
-    
+
     start = the_pattern[start_index]
     end = the_pattern[end_index]
 
@@ -72,21 +72,19 @@ def process_elements(the_pattern, start_index, end_index,
 
     start_next = the_pattern[next_start_index]
     end_next = the_pattern[next_end_index]
-    
+
     elements_match = matches(start, end)
 
     if not elements_match:
-        index_to_remove = get_index_to_remove(can_remove, start, end, start_index,
-                                            end_index, start_next, end_next)
+        index_to_remove = get_index_to_remove(can_remove, start, end,
+                                              start_index, end_index,
+                                              start_next, end_next)
         can_remove = index_to_remove != -1
         elements_match = can_remove
-        remove_result = remove_if_can_match(the_pattern, can_remove, index_to_remove)
-        # if (can_remove):
-        #     the_pattern = remove_element_from_tuple(the_pattern, index_to_remove)
-        #     index_of_removed_element = index_to_remove
+        remove_result = remove_if_can_match(the_pattern, can_remove,
+                                            index_to_remove)
         the_pattern = remove_result[0]
         index_of_removed_element = remove_result[1]
-        # (the_pattern, index_of_removed_element)
 
     return (the_pattern, elements_match, index_of_removed_element)
 
