@@ -61,6 +61,7 @@ def element_was_removed(index_of_removed_element):
 def is_trivial(the_pattern):
     return len(the_pattern) < 2
 
+
 # returns a new palindrome from an existing palindrome
 def get_new_palindrome_from_existing(the_pattern):
     # even and odd palindromes can be made into new one by
@@ -143,7 +144,7 @@ def find_palindrome(pattern):
     otherwise returns the palindrome tuple."""
     result = None
     try:
-        assert(type(pattern) is tuple)
+        assert type(pattern) is tuple
         if (not is_trivial(pattern)):
             result = get_palindrome(pattern)
     except AssertionError:
