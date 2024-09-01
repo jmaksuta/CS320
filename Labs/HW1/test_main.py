@@ -3,20 +3,33 @@ import csv
 import main
 
 def run_test_file(inputs_filename, expected_filename):
-     expected_results = get_list_from_file(expected_filename)
-     inputs = get_list_from_file(inputs_filename)
-
-     for index in range(0, len(inputs)):
+    expected_results = get_list_from_file(expected_filename)
+    inputs = get_list_from_file(inputs_filename)
+    
+    for index in range(0, len(inputs)):
         input_tuple = convert_to_tuple(inputs[index])
         actual = main.find_palindrome(input_tuple)
         expected = convert_to_tuple(expected_results[index])
-        result = actual == expected
+        check_result(index, actual, expected)
         # result = lists_are_equal(actual, expected)
-        if not result:
-            print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
-        else:
-            print("result at index {index} is {result}".format(index=index, result=result))
+        # if not result:
+        #     print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
+        # else:
+        #     print("result at index {index} is {result}".format(index=index, result=result))
 
+    for index in range(0, len(inputs)):
+        input_list = inputs[index]
+        actual = main.find_palindrome(input_list)
+        expected = None
+        check_result(index, actual, expected)
+
+def check_result(index, actual, expected):
+    result = actual == expected
+    # result = lists_are_equal(actual, expected)
+    if not result:
+        print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
+    else:
+        print("result at index {index} is {result}".format(index=index, result=result))
 
 def convert_to_tuple(the_list):
     result = None
