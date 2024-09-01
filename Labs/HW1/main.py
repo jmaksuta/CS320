@@ -11,13 +11,13 @@ def get_palindrome(pattern):
     for n in range(0, endIndex):
         indexStart = n
         indexEnd = len(pattern)-(n + 1)
-        compareResult = process_elements(pattern,
+        processResult = process_elements(pattern,
                                          indexStart,
                                          indexEnd,
                                          indexOfElementRemoved)
-        pattern = compareResult[0]
-        isPalindrome = compareResult[1]
-        indexOfElementRemoved = compareResult[2]
+        pattern = processResult[0]
+        isPalindrome = processResult[1]
+        indexOfElementRemoved = processResult[2]
 
         if not isPalindrome:
             break
