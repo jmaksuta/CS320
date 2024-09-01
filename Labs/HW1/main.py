@@ -10,9 +10,8 @@ Dr. Partridge
 # Subroutines if any, go here
 
 
-# this function gets the palindrome.
+# main internal method, processes the pattern, and gets a result.
 def get_palindrome(the_pattern):
-    # this function gets the palindrome.
     end_index = get_middle_index(the_pattern)
 
     index_of_removed_element = -1
@@ -44,6 +43,7 @@ def get_middle_index(the_pattern):
     return end_index
 
 
+# Returns the the pattern if it is a palindrome, otherwise returns None
 def get_result(the_pattern, is_palindrome):
     result = None
     if (is_palindrome):
@@ -51,6 +51,7 @@ def get_result(the_pattern, is_palindrome):
     return result
 
 
+# Removes the element at specified index from a tuple.
 def remove_element_from_tuple(the_pattern, index_to_remove):
     the_list = list(the_pattern)
     if (index_to_remove != -1):
@@ -58,6 +59,7 @@ def remove_element_from_tuple(the_pattern, index_to_remove):
     return tuple(the_list)
 
 
+# Returns a tuple after processes the elements of pattern.
 def process_elements(the_pattern, start_index, end_index,
                      index_of_removed_element):
     can_remove = index_of_removed_element == -1
@@ -88,10 +90,13 @@ def process_elements(the_pattern, start_index, end_index,
     return (the_pattern, elements_match, index_of_removed_element)
 
 
+# Returns true if start and end are equivalent, otherwise False.
 def matches(start, end):
     return (start == end)
 
 
+# Returns the index of an element that can be removed to make it match the
+# other element.
 def get_index_to_remove(can_remove, start, end, start_index,
                         end_index, start_next, end_next):
     index_to_remove = -1
