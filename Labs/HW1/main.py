@@ -18,7 +18,7 @@ def get_palindrome(the_pattern):
     is_palindrome = True
 
     for start_index in range(0, end_index):
-        end_index = len(the_pattern)-(start_index + 1)
+        end_index = len(the_pattern) - (start_index + 1)
         process_result = process_elements(the_pattern,
                                           start_index,
                                           end_index,
@@ -69,7 +69,7 @@ def process_elements(the_pattern, start_index, end_index,
     end = the_pattern[end_index]
 
     next_start_index = start_index + 1
-    next_end_index = len(the_pattern)-(start_index + 2)
+    next_end_index = len(the_pattern) - (start_index + 2)
 
     start_next = the_pattern[next_start_index]
     end_next = the_pattern[next_end_index]
