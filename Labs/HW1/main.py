@@ -11,7 +11,7 @@ def get_palindrome(pattern):
     for n in range(0, endIndex):
         indexStart = n
         indexEnd = len(pattern)-(n + 1)
-        compareResult = compare_elements(pattern,
+        compareResult = process_elements(pattern,
                                          indexStart,
                                          indexEnd,
                                          indexOfElementRemoved)
@@ -49,7 +49,7 @@ def removeElementFromTuple(pattern, indexToRemove):
     return tuple(theList)
 
 
-def compare_elements(pattern, indexStart, indexEnd, indexOfElementRemoved):
+def process_elements(pattern, indexStart, indexEnd, indexOfElementRemoved):
     canRemove = indexOfElementRemoved == -1
     elementsMatch = True
 
