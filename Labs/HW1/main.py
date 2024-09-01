@@ -79,7 +79,7 @@ def process_elements(the_pattern, start_index, end_index,
         index_to_remove = get_index_to_remove(can_remove, start, end,
                                               start_index, end_index,
                                               start_next, end_next)
-        can_remove = index_to_remove != -1
+        can_remove = (index_to_remove != -1) and (len(the_pattern) - 1 > 1)
         elements_match = can_remove
         remove_result = remove_if_can_match(the_pattern, can_remove,
                                             index_to_remove)
