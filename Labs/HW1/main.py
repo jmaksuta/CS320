@@ -118,6 +118,6 @@ def find_palindrome(pattern):
     """Finds a palindrome and returns None if none found,
     otherwise returns the palindrome tuple."""
     result = None
-    if (len(pattern) > 2):
+    if (len(pattern) > 1):
         result = get_palindrome(pattern)
     return result
