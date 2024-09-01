@@ -30,7 +30,7 @@ def get_palindrome(the_pattern):
         if not is_palindrome:
             break
 
-    return get_result(the_pattern, is_palindrome)
+    return get_result(the_pattern, is_palindrome, index_of_removed_element)
 
 
 # calculates the middle index of the sequence.
@@ -44,12 +44,36 @@ def get_middle_index(the_pattern):
 
 
 # Returns the the pattern if it is a palindrome, otherwise returns None
-def get_result(the_pattern, is_palindrome):
+def get_result(the_pattern, is_palindrome, index_of_removed_element):
     result = None
-    if (is_palindrome):
+    if (is_palindrome and has_element_been_removed(index_of_removed_element)):
         result = the_pattern
+    elif (is_palindrome and not has_element_been_removed(index_of_removed_element)):
+        result = get_new_palindrome_from_existing(the_pattern)
     return result
 
+
+def has_element_been_removed(index_of_removed_element):
+    return (index_of_removed_element != -1)
+
+# returns a new palindrome from an existing palindrome
+def get_new_palindrome_from_existing(the_pattern):
+    # if is_even(the_pattern):
+    #     # even length palindrome can be made by removing one of the middle indexes
+        
+    #     pass
+    # else:
+    #     # odd palindrome can be made by removing the middle index element
+    #     pass
+    # even and odd palindromes can be made into new one by removing a middle index element
+    if len(the_pattern) > 2:
+        index_to_remove = get_middle_index(the_pattern)
+        the_pattern = remove_element_from_tuple(the_pattern, index_to_remove)
+    return the_pattern
+
+
+def is_even(the_pattern):
+    return len(the_pattern) % 2 == 0
 
 # Removes the element at specified index from a tuple.
 def remove_element_from_tuple(the_pattern, index_to_remove):
