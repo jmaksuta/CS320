@@ -1,100 +1,110 @@
+"""
+Lab 01 - HW1
+Written By John Maksuta
+CS320-801 Fall 2024
+Dr. Partridge
+"""
 # Determine if a tuple can be made into a palindrome by removing exactly one
 # element
 
 # Subroutines if any, go here
-def get_palindrome(pattern):
-    endIndex = get_middle_index(pattern)
 
-    indexOfElementRemoved = -1
-    isPalindrome = True
 
-    for n in range(0, endIndex):
-        indexStart = n
-        indexEnd = len(pattern)-(n + 1)
-        processResult = process_elements(pattern,
-                                         indexStart,
-                                         indexEnd,
-                                         indexOfElementRemoved)
-        pattern = processResult[0]
-        isPalindrome = processResult[1]
-        indexOfElementRemoved = processResult[2]
+# this function gets the palindrome.
+def get_palindrome(the_pattern):
+    # this function gets the palindrome.
+    end_index = get_middle_index(the_pattern)
 
-        if not isPalindrome:
+    index_of_removed_element = -1
+    is_palindrome = True
+
+    for start_index in range(0, end_index):
+        end_index = len(the_pattern)-(start_index + 1)
+        process_result = process_elements(the_pattern,
+                                          start_index,
+                                          end_index,
+                                          index_of_removed_element)
+        the_pattern = process_result[0]
+        is_palindrome = process_result[1]
+        index_of_removed_element = process_result[2]
+
+        if not is_palindrome:
             break
 
-    return get_result(pattern, isPalindrome)
+    return get_result(the_pattern, is_palindrome)
 
 
 # calculates the middle index of the sequence.
-def get_middle_index(pattern):
-    endIndex = int(len(pattern) / 2)
-    isEven = len(pattern) % 2 == 0
-    if (not isEven):
-        endIndex += 1
+def get_middle_index(the_pattern):
+    end_index = int(len(the_pattern) / 2)
+    is_even = len(the_pattern) % 2 == 0
+    if (not is_even):
+        end_index += 1
 
-    return endIndex
+    return end_index
 
 
-def get_result(pattern, isPalindrome):
+def get_result(the_pattern, is_palindrome):
     result = None
-    if (isPalindrome):
-        result = pattern
+    if (is_palindrome):
+        result = the_pattern
     return result
 
 
-def removeElementFromTuple(pattern, indexToRemove):
-    theList = list(pattern)
-    if (indexToRemove != -1):
-        theList.pop(indexToRemove)
-    return tuple(theList)
+def remove_element_from_tuple(the_pattern, index_to_remove):
+    the_list = list(the_pattern)
+    if (index_to_remove != -1):
+        the_list.pop(index_to_remove)
+    return tuple(the_list)
 
 
-def process_elements(pattern, indexStart, indexEnd, indexOfElementRemoved):
-    canRemove = indexOfElementRemoved == -1
-    elementsMatch = True
+def process_elements(the_pattern, start_index, end_index,
+                     index_of_removed_element):
+    can_remove = index_of_removed_element == -1
+    elements_match = True
 
-    start = pattern[indexStart]
-    end = pattern[indexEnd]
+    start = the_pattern[start_index]
+    end = the_pattern[end_index]
 
-    indexStartNext = indexStart + 1
-    indexEndNext = len(pattern)-(indexStart + 2)
+    next_start_index = start_index + 1
+    next_end_index = len(the_pattern)-(start_index + 2)
 
-    startNext = pattern[indexStartNext]
-    endNext = pattern[indexEndNext]
+    start_next = the_pattern[next_start_index]
+    end_next = the_pattern[next_end_index]
 
-    indexToRemove = get_index_to_remove(canRemove,
-                                        start,
-                                        end,
-                                        indexStart,
-                                        indexEnd,
-                                        startNext,
-                                        endNext)
-    canRemove = indexToRemove != -1
-    elementsMatch = matches(start, end) or canRemove
-    if (canRemove):
-        pattern = removeElementFromTuple(pattern, indexToRemove)
-        indexOfElementRemoved = indexToRemove
+    index_to_remove = get_index_to_remove(can_remove,
+                                          start,
+                                          end,
+                                          start_index,
+                                          end_index,
+                                          start_next,
+                                          end_next)
+    can_remove = index_to_remove != -1
+    elements_match = matches(start, end) or can_remove
+    if (can_remove):
+        the_pattern = remove_element_from_tuple(the_pattern, index_to_remove)
+        index_of_removed_element = index_to_remove
 
-    return (pattern, elementsMatch, indexOfElementRemoved)
+    return (the_pattern, elements_match, index_of_removed_element)
 
 
 def matches(start, end):
     return (start == end)
 
 
-def get_index_to_remove(canRemove, start, end, indexStart,
-                        indexEnd, startNext, endNext):
-    indexToRemove = -1
-    if (canRemove and startNext == end):
-        indexToRemove = indexStart
-    elif (canRemove and endNext == start):
-        indexToRemove = indexEnd
-    return indexToRemove
+def get_index_to_remove(can_remove, start, end, start_index,
+                        end_index, start_next, end_next):
+    index_to_remove = -1
+    if (can_remove and start_next == end):
+        index_to_remove = start_index
+    elif (can_remove and end_next == start):
+        index_to_remove = end_index
+    return index_to_remove
 
 
-# Finds a palindrome and returns None if none found, otherwise returns the
-# palindrome tuple.
 def find_palindrome(pattern):
+    """Finds a palindrome and returns None if none found,
+    otherwise returns the palindrome tuple."""
     result = None
     if (len(pattern) > 2):
         result = get_palindrome(pattern)
