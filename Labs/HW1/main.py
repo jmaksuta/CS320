@@ -41,7 +41,7 @@ def get_middle_index(the_pattern):
     return end_index
 
 
-# Returns the the pattern if it is a palindrome, otherwise returns None
+# Returns the the pattern if it is a palindrome, otherwise returns None.
 def get_result(the_pattern, is_palindrome, index_of_removed_element):
     result = None
     elem_was_removed = element_was_removed(index_of_removed_element)
@@ -54,15 +54,12 @@ def get_result(the_pattern, is_palindrome, index_of_removed_element):
     return result
 
 
+# returns true if an element was removed from the pattern already.
 def element_was_removed(index_of_removed_element):
     return (index_of_removed_element != -1)
 
 
-def is_trivial(the_pattern):
-    return len(the_pattern) < 2
-
-
-# returns a new palindrome from an existing palindrome
+# returns a new palindrome from an existing palindrome.
 def get_new_palindrome_from_existing(the_pattern):
     # even and odd palindromes can be made into new one by
     # removing a middle index element
@@ -72,6 +69,7 @@ def get_new_palindrome_from_existing(the_pattern):
     return the_pattern
 
 
+# returns true if the length of the pattern is even.
 def is_even(the_pattern):
     return len(the_pattern) % 2 == 0
 
@@ -131,6 +129,7 @@ def get_index_to_remove(can_remove, start, end, start_index,
     return index_to_remove
 
 
+# removes an element from the tuple at specified index, if can_remove is true.
 def remove_if_can_match(the_pattern, can_remove, index_to_remove):
     index_of_removed_element = -1
     if (can_remove):
@@ -139,14 +138,23 @@ def remove_if_can_match(the_pattern, can_remove, index_to_remove):
     return (the_pattern, index_of_removed_element)
 
 
+# returns true if the pattern is trivial, that is length is less than 2.
+def is_trivial(the_pattern):
+    return len(the_pattern) < 2
+
+
+# returns true if pattern is a tuple.
+def input_is_tuple(pattern):
+    return type(pattern) is tuple
+
+
 def find_palindrome(pattern):
     """Finds a palindrome and returns None if none found,
     otherwise returns the palindrome tuple."""
     result = None
     try:
-        assert type(pattern) is tuple
-        if (not is_trivial(pattern)):
+        if (input_is_tuple(pattern) and not is_trivial(pattern)):
             result = get_palindrome(pattern)
-    except AssertionError:
+    except Exception:
         result = None
     return result
