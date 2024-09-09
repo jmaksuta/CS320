@@ -63,26 +63,119 @@ class TreeNode:
         self.left = left
         self.right = right
         self.parent = parent
+        self.height = 0
 
     def is_external(self):
         return (self.left == None and self.right == None)
 
-    def search(self, key_value_pair, root):
+    def search(self, value, root):
         node = root
         while not node.is_external():
-            if key_value_pair == node.value:
+            if value.lower() == node.value.lower():
                 break
-            elif key_value_pair < node.value:
+            elif value.lower() < node.value.lower():
                 node = node.left
             else:
                 node = node.right
         return node
+
+    def max(self, left_operand, right_operand):
+        if (left_operand >= right_operand):
+            return left_operand
+        else:
+            return right_operand
+        
+    def tallestChild(self):
+        if (self.left.height >= self.right.height):
+            return self.left
+        else:
+            return self.right
+        
+    def left_rotation(self, to_rotate):
+        ap = to_rotate.parent
+        pivot = to_rotate.right
+        # t0 = to_rotate.left
+        t1 = pivot.left
+        # t2 = c.left
+        # t3 = c.right
+        pivot.parent = ap
+        if pivot.value.lower() < ap.value.lower():
+            ap.left = pivot
+        else:
+            ap.right = pivot
+        # b.right = c
+        # c.parent = b
+        pivot.left = to_rotate
+        to_rotate.parent = pivot
+        # to_rotate.left = t0
+        to_rotate.right = t1
+        # c.left = t2
+        # c.right = t3
+
+    def right_rotation(self, to_rotate):
+        # t0 = a.left
+        # t1 = a.right
+        pivot = to_rotate.left
+        cp = to_rotate.parent
+        t2 = pivot.right
+        # t3 = c.right
+        pivot.parent = cp
+        if pivot.value.lower() < cp.value.lower():
+            cp.left = pivot
+        else:
+            cp.right = pivot
+        pivot.right = to_rotate
+        to_rotate.parent = pivot
+        # a.left = t0
+        # a.right = t1
+        to_rotate.left = t2
+        # c.right = t3
+
+        
+    def restructure(self):
+        # do trinode restructure on self here.
+        # a = self.left
+        # b = self
+        # c = self.right
+
+        # x = self
+        # y = self.parent
+        # z = y.parent
+        
+        parent = self.parent
+        grand_parent = parent.parent
+
+        if (parent.left == self and grand_parent.left == parent):
+            # left subtree single rotation
+            self.right_rotation(grand_parent)
+        elif (parent.right == self and grand_parent.right == parent):
+            # right subtree single rotation
+            # left rotation
+            self.left_rotation(grand_parent)
+        elif (parent.left == self and grand_parent.right == parent):
+            # left-right subtree double rotation
+            # rotate b and c right, single rotation
+            self.right_rotation(parent)
+            self.left_rotation(grand_parent)
+        elif (parent.right == self and grand_parent.left == parent):
+            # right-left subtree double rotation
+            self.left_rotation(parent)
+            self.right_rotation(grand_parent)
+
+        pass
     
     def rebalanceAVL(self, node, root):
-        # node.height = 1 + max(node.left.height, node.right.height)
-        # while node is not root:
-        #     node = node.parent
-        pass
+        node.height = 1 + self.max(node.left.height, node.right.height)
+        while node is not root:
+            node = node.parent
+            if abs(node.left.height - node.right.height) > 1:
+                # Let y be the tallest child of v and let x be the tallest child of y
+                y = node.tallestChild()
+                x = y.tallestChild()
+                # v<-restructure(x) # trinode restructure operation
+                node = x.restructure()
+            node.height = 1 + self.max(node.left.height, node.right.height)
+        return
 
     # adds two external-node children to w
     def expandExternal(self):
@@ -94,27 +187,27 @@ class TreeNode:
         # to restore its height balance.
         return self
 
-    def add(self, key_value_pair, root):
-        node = self.search(key_value_pair, root)
+    def add(self, value, root):
+        node = self.search(value, root)
         if not node.is_external():
             return node
         if node.value == None:
-            node.value = key_value_pair
+            node.value = value
         else:
             # expand v into an internal node with two external node children
             node.expandExternal()
-            if key_value_pair < node.value:
-                node.left = TreeNode(key_value_pair, node)
-            elif key_value_pair == node.value:
+            if value.lower() < node.value.lower():
+                node.left = TreeNode(value, node)
+            elif value.lower() == node.value.lower():
                 pass
             else:
-                node.right = TreeNode(key_value_pair, node)
+                node.right = TreeNode(value, node)
             
             node.height = 1
             self.rebalanceAVL(node, root)
         return
 
-    def remove(self, key_value_pair, root):
+    def remove(self, value, root):
         pass
 
    
@@ -134,6 +227,8 @@ def load_wordlist(root, wordlist):
 def internal_new_words(words, wordlist):
     root = TreeNode()
     load_wordlist(root, wordlist)
+    # TODO: perform search and return result
+    return None
 
 def validate(words, wordlist):
     # TODO: write validation.
@@ -143,15 +238,16 @@ def validate(words, wordlist):
 
 # your subroutine goes here
 def new_words(words, wordlist):
+    result = None
     try:
         validate(words, wordlist)
-        internal_new_words(words, wordlist)
+        result = internal_new_words(words, wordlist)
 
     except Exception as ex:
         print(ex)
-        return None
-    pass
+        result = None
+    return result
 
 # testing
 # new_words(None, None)
-new_words(("this","that","the","other"),("this","that","a","other","walk","talk"))
+# new_words(("this","that","the","other"),("this","that","a","other","walk","talk"))
