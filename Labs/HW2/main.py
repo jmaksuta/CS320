@@ -14,7 +14,7 @@ def compare_words(search_for, compare_to):
 
 # Returns true if input_word is greater than compare_to.
 def is_greater_than(input_word, compare_to):
-    return input_word > compare_to
+    return input_word.lower() > compare_to.lower()
 
 
 # Calculates the middle index of the array
@@ -46,13 +46,19 @@ def binary_search(word, wordlist):
     return result
 
 
+# Returns true if the word is in wordlist
+def is_word_in_wordlist(word, wordlist):
+    return (binary_search(word, wordlist) is not None)
+
+
 # this is the main function internally, that runs the loop and search
 def internal_new_words(words, wordlist):
     result = None
     list = []
     for word in words:
-        if binary_search(word, wordlist) is None:
-            list.append(word)
+        word_is_in_list = is_word_in_wordlist(word, wordlist)
+        if not word_is_in_list:
+            list.append(word.lower())
 
     if len(list) > 0:
         result = tuple(list)
@@ -61,15 +67,21 @@ def internal_new_words(words, wordlist):
 
 # validates the input arguments
 def validate(words, wordlist):
-    words_passed = (words is not None and type(words) is tuple)
-    wordlist_passed = (wordlist is not None and type(wordlist) is tuple)
-    return (words_passed and wordlist_passed)
+    words_not_none = words is not None
+    wordlist_not_none = wordlist is not None
+    both_not_none = (words_not_none and wordlist_not_none)
+    both_are_tuples = type(wordlist) is tuple and type(words) is tuple
+
+    passed = both_not_none and both_are_tuples
+
+    return passed
 
 
 # your subroutine goes here
-def new_words(words, wordlist):
+def new_words(words=None, wordlist=None):
     result = None
     if validate(words, wordlist):
-        result = internal_new_words(words, wordlist)
+        lower_list = sorted(wordlist, key=str.casefold)
+        result = internal_new_words(words, lower_list)
 
     return result
