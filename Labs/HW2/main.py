@@ -53,7 +53,7 @@ def is_word_in_wordlist(word, wordlist):
 
 # this is the main function internally, that runs the loop and search
 def internal_new_words(words, wordlist):
-    result = None
+    result = ()
     list = []
     for word in words:
         word_is_in_list = is_word_in_wordlist(word, wordlist)
