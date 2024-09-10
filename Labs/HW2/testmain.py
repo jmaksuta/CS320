@@ -70,4 +70,26 @@ def get_list_from_file(file_name):
     return result
 
 
+def test_args():
+    result = main.new_words()
+    assert result == None
+
+    result2 = main.new_words(None, ("a","b","c"))
+    assert result2 == None
+
+    result3 = main.new_words(("a","b","c"), None)
+    assert result3 == None
+
+    result3 = main.new_words(None, None)
+    assert result3 == None
+
+    result4 = main.new_words((),())
+    assert result4 == ()
+
+    result5 = main.new_words((),())
+    assert result5 == ()
+
+
 run_test_file("inputs1.csv", "inputs2.csv", "expected.csv")
+test_args()
+
