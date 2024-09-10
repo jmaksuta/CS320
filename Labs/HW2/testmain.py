@@ -12,7 +12,7 @@ def run_test_file(inputs_filename, inputs2_filename, expected_filename):
         input2_tuple = convert_to_tuple(inputs2[index])
         
         actual = main.new_words(input_tuple, input2_tuple)
-
+        # print(actual)
         expected = convert_to_tuple(expected_results[index])
         check_result(index, actual, expected)
         # result = lists_are_equal(actual, expected)
@@ -60,9 +60,11 @@ def get_list_from_file(file_name):
         reader = csv.reader(csvfile, delimiter=',')
 
         for row in reader:
-             if row[0] == "None":
+            if len(row) == 0:
+                result.append([])
+            elif row[0] == "None":
                 result.append(None)
-             else:
+            else:
                 result.append(row)
 
     return result

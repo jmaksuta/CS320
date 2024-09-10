@@ -14,7 +14,7 @@ def compare_words(search_for, compare_to):
 
 # Returns true if input_word is greater than compare_to.
 def is_greater_than(input_word, compare_to):
-    return input_word.lower() > compare_to.lower()
+    return input_word > compare_to
 
 
 # Calculates the middle index of the array
@@ -61,21 +61,15 @@ def internal_new_words(words, wordlist):
 
 # validates the input arguments
 def validate(words, wordlist):
-    assert words is not None
-    assert wordlist is not None
-    assert type(words) is tuple
-    assert type(wordlist) is tuple
-    return
+    words_passed = (words is not None and type(words) is tuple)
+    wordlist_passed = (wordlist is not None and type(wordlist) is tuple)
+    return (words_passed and wordlist_passed)
 
 
 # your subroutine goes here
 def new_words(words, wordlist):
     result = None
-    try:
-        validate(words, wordlist)
+    if validate(words, wordlist):
         result = internal_new_words(words, wordlist)
 
-    except Exception as ex:
-        print(ex)
-        result = None
     return result
