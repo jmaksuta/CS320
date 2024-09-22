@@ -8,11 +8,13 @@ def run_test_file(inputs_filename, inputs2_filename, expected_filename):
     
     for index in range(0, len(inputs)):
         input_list = inputs[index]
-        
+        original = list(input_list)
+
         actual = main.heapsort(input_list)
         # print(actual)
         expected = expected_results[index]
         check_result(index, actual, expected)
+        check_result(index, original, input_list)
         # result = lists_are_equal(actual, expected)
         # if not result:
         #     print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
