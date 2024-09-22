@@ -1,7 +1,7 @@
 import math # optional and you can delete this line if not useful
 
 class HeapNode:
-    def __init__(self, key=None, element=None, left_tree=None, right_tree=None) -> None:
+    def __init__(self, key: int=None, element=None, left_tree=None, right_tree=None) -> None:
         self.key = key
         self.element = element
         self.left_tree = left_tree
@@ -11,11 +11,15 @@ class HeapNode:
     def is_internal(self):
         return self.left_tree == None and self.right_tree == None
 
-    def swap(list, up_elem_index, down_elem_index):
-        # temp = up_elem
-        pass
+
+    def swap(self, list, up_elem_index, down_elem_index):
+        temp = list[up_elem_index]
+        list[up_elem_index] = list[down_elem_index]
+        list[down_elem_index] = temp
+        return
         
-    def insert(self, heap_node: HeapNode, list)->None:
+
+    def insert(self, heap_node = None, list : list = None)->None:
         n = n + 1
         list[n] = heap_node
         i = n
@@ -69,13 +73,24 @@ class Comparator:
         return result
     
     # isLess : True if and only if is less than .
-    def is_less(a, b)->type:
-        return type(True)
+    def is_less(self, a, b)->bool:
+        return a < b
     # isLessOrEqualTo : True if and only if is less than or equal to .
+    def is_less_or_equal_to(self, a, b)->bool:
+        return a <= b
     # isEqualTo : True if and only if and are equal.
+    def is_equal_to(self, a, b)->bool:
+        return a == b
     # isGreater : True if and only if is greater than .
+    def is_greater(self, a, b)->bool:
+        return a > b
+
     # isGreaterOrEqualTo : True if and only if is greater than or equal to .
+    def is_greater_or_equal_to(self, a, b)->bool:
+        return a >= b
     # isComparable : True if and only if can be compared.
+    def is_comparable(self, a, b)->bool:
+        pass
 
 
 
@@ -117,9 +132,6 @@ def validate(hlist):
 # fill in heapsort
 def heapsort(hlist):
     result = None
-    compare = Comparator()
-    compare.is_less(1, 2)
-    
     if validate(hlist):
         result = internal_heapsort(hlist)
     return result
