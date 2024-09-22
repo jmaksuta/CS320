@@ -124,15 +124,18 @@ class Heap:
 
     def insert(self, element = None)->None:
         # n = n + 1
-        # list[n] = element
+        # A[n] <- (k,e)
         self.list.append(element)
-        
+        # i <- n
         current = len(self.list)
+        # while i > 1 and A[floor(1/2)] > A[i] do
         while current > 1 and self.greater_than(self.nth_elem(int(current / 2)), self.nth_elem(current)):
             # self.list[int(last_index / 2)].element > self.list[last_index].element:
+            # Swap A[floor(i/2)] and A[i]
             parent_index = int((current - 1) / 2)
             child_index = (current - 1)
             self.swap(parent_index, child_index)
+            # i <- floor(i/2)
             current = int(current / 2)
         return
     
@@ -152,25 +155,43 @@ class Heap:
         return self.list[self.to_index(n)]
 
     def remove_min(self):
+        # temp <- A[1]
         temp = self.list[0]
         n = len(self.list)
+        # A[1] <- A[n]
         self.list[0] = self.nth_elem(n)
+        # n <- n - 1
         n = n - 1
+        # i <- 1
         i = 1
+        # while i < n do
         while i < n:
+            # if 2i + 1 <= n then # node has 2 internal children
             if ((2 * i) + 1) <= n:
+                # if A[i] <= A[2i] and A[i] <= A[2i + 1] then
                 if (self.nth_elem(i) <= self.nth_elem(2 * i) and self.nth_elem(i) <= self.nth_elem((2 * i) + 1)):
+                    # return temp # we have restored the heap-order property
                     return temp
+                # else
                 else:
+                    # Let j be the index of the smaller of A[2i] and A[2i + 1]
                     j = self.nth_of_smaller(2 * i, (2 * i) + 1)
                     # j = math.min(self.list[(2 * i) - 1], self.list[((2 * i) + 1) - 1])
+                    # Swap A[i] and A[j]
                     self.swap(self.to_index(i), self.to_index(j))
+                    # i <- j
                     i = j
+            # else # this node has zero or one internal child
             else:
+                # if 2i <= n then # this node has one internal child (th last node)
                 if (2 * i) <= n:
+                    # if A[i] > A[2i]
                     if (self.nth_elem(i) > self.nth_elem(2 * i)):
+                        # Swap A[i] and A[2i]
                         self.swap(self.to_index(i), self.to_index(2 * i))
+                # return temp # we have restored the heap-order property
                 return temp
+        # return temp # we reached the last node or an external node
         return temp           
 
 
