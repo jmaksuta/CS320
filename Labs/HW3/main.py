@@ -162,6 +162,7 @@ class Heap:
         self.list[0] = self.nth_elem(n)
         # n <- n - 1
         n = n - 1
+        self.list = self.list[:n]
         # i <- 1
         i = 1
         # while i < n do
