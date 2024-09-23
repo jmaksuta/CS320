@@ -1,4 +1,10 @@
-# import math # optional and you can delete this line if not useful
+"""
+Lab 03 - HW3
+61.2 Lab 3: Heap Sort
+Written By John Maksuta
+CS320-801 Fall 2024
+Dr. Partridge
+"""
 
 # subroutines if any, go here
 
@@ -120,7 +126,6 @@ def internal_heapsort(hlist):
 
     for index in range(len(the_heap.list)):
         result.append(str(the_heap.remove_min()))
-        # print("DEBUG: list={value}".format(value=the_heap.list))
 
     return result
 
