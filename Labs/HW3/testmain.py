@@ -21,12 +21,12 @@ def run_test_file(inputs_filename, inputs2_filename, expected_filename):
         # else:
         #     print("result at index {index} is {result}".format(index=index, result=result))
 
-    for index in range(0, len(inputs)):
-        input_list = inputs[index]
+    # for index in range(0, len(inputs)):
+    #     input_list = inputs[index]
         
-        actual = main.heapsort(input_list)
-        expected = None
-        check_result(index, actual, expected)
+    #     actual = main.heapsort(input_list)
+    #     expected = None
+    #     check_result(index, actual, expected)
 
 def check_result(index, actual, expected):
     result = actual == expected

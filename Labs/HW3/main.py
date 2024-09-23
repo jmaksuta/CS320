@@ -118,7 +118,18 @@ class Heap:
         return
 
 
+    def to_index(self, value):
+        return value - 1
+    
+    def nth_elem(self, n):
+        return self.list[self.to_index(n)]
+
+
     def greater_than(self, left_operand, right_operand):
+        return left_operand > right_operand
+    
+
+    def less_than(self, left_operand, right_operand):
         return left_operand > right_operand
 
 
@@ -127,16 +138,16 @@ class Heap:
         # A[n] <- (k,e)
         self.list.append(element)
         # i <- n
-        current = len(self.list)
+        current_index = len(self.list) - 1
         # while i > 1 and A[floor(1/2)] > A[i] do
-        while current > 1 and self.greater_than(self.nth_elem(int(current / 2)), self.nth_elem(current)):
+        while current_index > 0 and self.greater_than(self.list[int((current_index - 1) / 2)], self.list[current_index]):
             # self.list[int(last_index / 2)].element > self.list[last_index].element:
             # Swap A[floor(i/2)] and A[i]
-            parent_index = int((current - 1) / 2)
-            child_index = (current - 1)
+            parent_index = int((current_index - 1) / 2)
+            child_index = current_index
             self.swap(parent_index, child_index)
             # i <- floor(i/2)
-            current = int(current / 2)
+            current_index = parent_index
         return
     
 
@@ -147,52 +158,60 @@ class Heap:
         else:
             result = nth_elem_b
         return result
-
-    def to_index(self, value):
-        return value - 1
     
-    def nth_elem(self, n):
-        return self.list[self.to_index(n)]
+    def index_of_smaller(self, index_a, index_b):
+        result = -1
+        if self.list[index_a] <= self.list[index_b]:
+            result = index_a
+        else:
+            result = index_b
+
+        return result
 
     def remove_min(self):
         # temp <- A[1]
         temp = self.list[0]
         n = len(self.list)
         # A[1] <- A[n]
+        # self.list.remove(self.nth_elem(n))
         self.list[0] = self.nth_elem(n)
         # n <- n - 1
         n = n - 1
         self.list = self.list[:n]
         # i <- 1
-        i = 1
+        current_index = 0
         # while i < n do
-        while i < n:
+        while current_index < n:
+            
+            index_a = (2 * current_index) + 1
+            index_b = (2 * current_index) + 2
             # if 2i + 1 <= n then # node has 2 internal children
-            if ((2 * i) + 1) <= n:
+            if index_b < n:
                 # if A[i] <= A[2i] and A[i] <= A[2i + 1] then
-                if (self.nth_elem(i) <= self.nth_elem(2 * i) and self.nth_elem(i) <= self.nth_elem((2 * i) + 1)):
+                if self.list[current_index] <= self.list[index_a] and self.list[current_index] <= self.list[index_b]:
                     # return temp # we have restored the heap-order property
                     return temp
                 # else
                 else:
                     # Let j be the index of the smaller of A[2i] and A[2i + 1]
-                    j = self.nth_of_smaller(2 * i, (2 * i) + 1)
+                    smaller_index = self.index_of_smaller(index_a, index_b)
                     # j = math.min(self.list[(2 * i) - 1], self.list[((2 * i) + 1) - 1])
                     # Swap A[i] and A[j]
-                    self.swap(self.to_index(i), self.to_index(j))
+                    self.swap(current_index, smaller_index)
                     # i <- j
-                    i = j
+                    current_index = smaller_index
             # else # this node has zero or one internal child
             else:
                 # if 2i <= n then # this node has one internal child (th last node)
-                if (2 * i) <= n:
+                if index_a < n:
                     # if A[i] > A[2i]
-                    if (self.nth_elem(i) > self.nth_elem(2 * i)):
+                    if self.list[current_index] > self.list[index_a]:
                         # Swap A[i] and A[2i]
-                        self.swap(self.to_index(i), self.to_index(2 * i))
+                        self.swap(current_index, index_a)
                 # return temp # we have restored the heap-order property
                 return temp
         # return temp # we reached the last node or an external node
+        
         return temp           
 
 
@@ -201,13 +220,12 @@ def internal_heapsort(hlist):
     result = []
     the_heap = Heap()
     for index in range(0, len(hlist)):
-        input_value = hlist[index]
+        input_value = int(hlist[index])
         the_heap.insert(input_value)
 
-    # Todo create a list from the elements
-
     for index in range(len(the_heap.list)):
-        result.append(the_heap.remove_min())
+        result.append(str(the_heap.remove_min()))
+        # print("DEBUG: list={value}".format(value=the_heap.list))
 
     return result
 
