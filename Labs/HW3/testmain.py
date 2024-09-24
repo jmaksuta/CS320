@@ -2,7 +2,7 @@ import os
 import csv
 import main
 
-def run_test_file(inputs_filename, inputs2_filename, expected_filename):
+def run_test_file(inputs_filename, expected_filename):
     expected_results = get_list_from_file(expected_filename)
     inputs = get_list_from_file(inputs_filename)
     
@@ -80,6 +80,6 @@ def test_args():
     print("empty list passes.")
 
 
-run_test_file("inputs1.csv", "inputs2.csv", "expected.csv")
+run_test_file("inputs_data.csv", "expected_data.csv")
 test_args()
 
