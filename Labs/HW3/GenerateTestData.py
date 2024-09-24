@@ -1,3 +1,4 @@
+import sys
 import random
 
 random.seed(10)
@@ -35,4 +36,13 @@ def generate_test_data(file_name, number_of_elements):
     outputs_file.writelines(expecteds)
     outputs_file.close()
 
-generate_test_data("data.csv", 10)
+
+
+# def _main_API(args):
+#     sys.argv=["GenerateTestData.py"] + "data.csv" + args
+#     generate_test_data("data.csv", args)
+    
+if __name__ == '__main__':
+    generate_test_data("data.csv", int(sys.argv[1]))
+else:
+    generate_test_data("data.csv", 10)
