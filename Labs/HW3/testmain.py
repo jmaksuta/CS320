@@ -14,7 +14,7 @@ def run_test_file(inputs_filename, inputs2_filename, expected_filename):
         # print(actual)
         expected = expected_results[index]
         check_result(index, actual, expected)
-        check_result(index, original, input_list)
+        check_result(index, original, input_list, " Original unchanged.")
         # result = lists_are_equal(actual, expected)
         # if not result:
         #     print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
@@ -28,13 +28,13 @@ def run_test_file(inputs_filename, inputs2_filename, expected_filename):
     #     expected = None
     #     check_result(index, actual, expected)
 
-def check_result(index, actual, expected):
+def check_result(index, actual, expected, passed_message = ""):
     result = actual == expected
     # result = lists_are_equal(actual, expected)
     if not result:
         print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
     else:
-        print("result at index {index} is {result}".format(index=index, result=result))
+        print("result at index {index} is {result}.{passed_message}".format(index=index, result=result, passed_message=passed_message))
 
 def convert_to_tuple(the_list):
     result = None
@@ -73,9 +73,11 @@ def get_list_from_file(file_name):
 def test_args():
     result2 = main.heapsort(None)
     assert result2 == None
+    print("None passes.")
 
     result5 = main.heapsort([])
     assert result5 == []
+    print("empty list passes.")
 
 
 run_test_file("inputs1.csv", "inputs2.csv", "expected.csv")
