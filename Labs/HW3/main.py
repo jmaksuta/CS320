@@ -94,7 +94,7 @@ def internal_heapsort(hlist):
         the_heap.insert(input_value)
 
     for index in range(len(the_heap.list)):
-        result.append(str(the_heap.remove_minimum_element()))
+        result.append(the_heap.remove_minimum_element())
 
     return result
 

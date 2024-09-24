@@ -10,7 +10,8 @@ def run_test_file(inputs_filename, expected_filename):
         input_list = inputs[index]
         original = list(input_list)
 
-        actual = main.heapsort(input_list)
+        actual = main.heapsort(convert_to_int_list(input_list))
+        actual = convert_to_str_list(actual)
         # print(actual)
         expected = expected_results[index]
         check_result(index, actual, expected)
@@ -35,6 +36,18 @@ def check_result(index, actual, expected, passed_message = ""):
         print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
     else:
         print("result at index {index} is {result}.{passed_message}".format(index=index, result=result, passed_message=passed_message))
+
+def convert_to_int_list(the_list):
+    result = []
+    for index in range(0, len(the_list)):
+        result.append(int(the_list[index]))
+    return result
+
+def convert_to_str_list(the_list):
+    result = []
+    for index in range(0, len(the_list)):
+        result.append(str(the_list[index]))
+    return result
 
 def convert_to_tuple(the_list):
     result = None
