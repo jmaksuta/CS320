@@ -63,7 +63,8 @@ class Heap:
         length_of_list = len(self.list)
         self.list[0] = self._nth_elem(length_of_list)
         length_of_list = length_of_list - 1
-        self.list = self.list[:length_of_list]
+        # self.list = self.list[:length_of_list]
+        del self.list[length_of_list]
         current_index = 0
         while current_index < length_of_list:
             index_a = (2 * current_index) + 1
