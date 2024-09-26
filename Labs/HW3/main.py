@@ -109,9 +109,12 @@ def validate(hlist):
 def heapsort(hlist):
     """ Performs a heapsort on hlist. Returns None if hlist is None."""
     result = None
-    if validate(hlist):
-        # creates a working copy of the input argument,
-        # so changes are not affecting the input.
-        working_copy = list(hlist)
-        result = internal_heapsort(working_copy)
+    try:
+        if validate(hlist):
+            # creates a working copy of the input argument,
+            # so changes are not affecting the input.
+            working_copy = list(hlist)
+            result = internal_heapsort(working_copy)
+    except Exception as e:
+        result = None
     return result

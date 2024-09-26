@@ -4,19 +4,19 @@ import random
 random.seed(10)
 
 
-def get_test_list_data():
+def get_test_list_data(min=1, max=100):
     result = []
     random.seed(random.randint(1, 1000))
 
-    data_length = random.randint(1,100)
+    data_length = random.randint(min, max)
     for index in range(0, data_length):
         result.append(random.randint(0,9999999))
     return result
 
-def generate_test_data(file_name, number_of_elements):
+def generate_test_data(file_name, number_of_elements, min_elements_per_list, max_elements_per_list):
     lists = []
     for index in range(0, number_of_elements):
-        lists.append(get_test_list_data())
+        lists.append(get_test_list_data(min_elements_per_list, max_elements_per_list))
     
     inputs = []
     expecteds = []
@@ -43,6 +43,6 @@ def generate_test_data(file_name, number_of_elements):
 #     generate_test_data("data.csv", args)
     
 if __name__ == '__main__':
-    generate_test_data("data.csv", int(sys.argv[1]))
+    generate_test_data("data.csv", int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
 else:
-    generate_test_data("data.csv", 10)
+    generate_test_data("data.csv", 10, 0, 100)

@@ -1,33 +1,36 @@
 import os
 import csv
 import main
+import time
 
 def run_test_file(inputs_filename, expected_filename):
     expected_results = get_list_from_file(expected_filename)
     inputs = get_list_from_file(inputs_filename)
-    
+    elapsed_times = []
+    total_elapsed = 0
+
     for index in range(0, len(inputs)):
         input_list = inputs[index]
         original = list(input_list)
 
+        start_time = time.time()
+
         actual = main.heapsort(convert_to_int_list(input_list))
+
+        end_time = time.time()
+
         actual = convert_to_str_list(actual)
         # print(actual)
         expected = expected_results[index]
         check_result(index, actual, expected)
         check_result(index, original, input_list, " Original unchanged.")
-        # result = lists_are_equal(actual, expected)
-        # if not result:
-        #     print("result at index {index} is {result}, actual={actual}, expected={expected}".format(index=index, result=result, actual=actual, expected=expected))
-        # else:
-        #     print("result at index {index} is {result}".format(index=index, result=result))
-
-    # for index in range(0, len(inputs)):
-    #     input_list = inputs[index]
-        
-    #     actual = main.heapsort(input_list)
-    #     expected = None
-    #     check_result(index, actual, expected)
+        elapsed = end_time - start_time
+        print("Elapsed Time: {time:.6}".format(time=elapsed))
+        elapsed_times.append(elapsed)
+        total_elapsed += elapsed
+    
+    average_time = total_elapsed / len(elapsed_times)
+    print("Average Time: {avg:.6}".format(avg=average_time))
 
 def check_result(index, actual, expected, passed_message = ""):
     result = actual == expected
@@ -91,6 +94,10 @@ def test_args():
     result5 = main.heapsort([])
     assert result5 == []
     print("empty list passes.")
+
+    result5 = main.heapsort(["A", "B", "C"])
+    assert result5 == None
+    print("invalid list returns None.")
 
 
 run_test_file("inputs_data.csv", "expected_data.csv")
