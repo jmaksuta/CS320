@@ -1,6 +1,7 @@
 import os
 import csv
 import main
+# import main_noclass
 import time
 
 def run_test_file(inputs_filename, expected_filename):

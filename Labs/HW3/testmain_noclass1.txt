@@ -1,0 +1,34 @@
+result at index 0 is True.
+result at index 0 is True. Original unchanged.
+Elapsed Time: 0.0269089
+result at index 1 is True.
+result at index 1 is True. Original unchanged.
+Elapsed Time: 0.0266955
+result at index 2 is True.
+result at index 2 is True. Original unchanged.
+Elapsed Time: 0.0269251
+result at index 3 is True.
+result at index 3 is True. Original unchanged.
+Elapsed Time: 0.026799
+result at index 4 is True.
+result at index 4 is True. Original unchanged.
+Elapsed Time: 0.0279047
+result at index 5 is True.
+result at index 5 is True. Original unchanged.
+Elapsed Time: 0.0272236
+result at index 6 is True.
+result at index 6 is True. Original unchanged.
+Elapsed Time: 0.0267715
+result at index 7 is True.
+result at index 7 is True. Original unchanged.
+Elapsed Time: 0.0267775
+result at index 8 is True.
+result at index 8 is True. Original unchanged.
+Elapsed Time: 0.0269661
+result at index 9 is True.
+result at index 9 is True. Original unchanged.
+Elapsed Time: 0.0267794
+Average Time: 0.0269751
+None passes.
+empty list passes.
+invalid list returns None.
