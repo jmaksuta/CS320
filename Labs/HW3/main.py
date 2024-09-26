@@ -64,7 +64,6 @@ def remove_minimum_element(the_heap):
     length_of_list = len(the_heap)
     the_heap[0] = _nth_elem(the_heap, length_of_list)
     length_of_list = length_of_list - 1
-    # the_heap = the_heap[:length_of_list]
     del the_heap[length_of_list]
     current_index = 0
     while current_index < length_of_list:
@@ -95,8 +94,6 @@ def internal_heapsort(hlist):
         input_value = int(hlist[index])
         insert(the_heap, input_value)
 
-    # length = len(the_heap)
-    # for index in range(len(the_heap)):
     while len(the_heap) > 0: 
         result.append(remove_minimum_element(the_heap))
 
