@@ -15,7 +15,7 @@ def run_test_file(inputs_filename, expected_filename):
 
         start_time = time.time()
 
-        actual = main.heapsort(convert_to_int_list(input_list))
+        actual = main.longest_path(convert_to_int_list(input_list))
 
         end_time = time.time()
 
@@ -87,15 +87,15 @@ def get_list_from_file(file_name):
 
 
 def test_args():
-    result2 = main.heapsort(None)
+    result2 = main.longest_path(None)
     assert result2 == None
     print("None passes.")
 
-    result5 = main.heapsort([])
+    result5 = main.longest_path([])
     assert result5 == []
     print("empty list passes.")
 
-    result5 = main.heapsort(["A", "B", "C"])
+    result5 = main.longest_path(["A", "B", "C"])
     assert result5 == None
     print("invalid list returns None.")
 
