@@ -1,3 +1,5 @@
+import math
+
 # 62.2
 # Longest Path
 # The challenge in this assignment is to find the longest path of increasing values in a matrix.
@@ -107,8 +109,48 @@ def iterate_ribbon(ribbon):
         print(item)
     return result
 
+def is_prime(number):
+    result = False
+    flag = True
+    for value in range(2, int(math.sqrt(number) + 1)):
+        if number % value == 0:
+            flag = False
+            break
+    if flag and number > 0:
+        result = True
+    return result
+
+# /**
+#  * This function takes the reference to the array and the array size as an input.
+#  * You need to iterate over the elements of the array and check if how many primes they contain.
+#  * Return the number of primes counted.
+#  */
+# int *make_prime_array(int nth, int *array)
+# {
+#     int prime_count = 0;
+#     // prime series doesn't include 1 in document.
+#     int current = 2;
+#     while (prime_count < nth)
+#     {
+#         if (is_prime(current))
+#         {
+#             array[prime_count] = current;
+#             prime_count++;
+#         }
+#         current++;
+#     }
+
+#     return array;
+# }
+
 def find_larger_prime(larger_than):
-    return 11
+    found = False
+    even = (larger_than % 2 == 0)
+    value = larger_than + (1 if even else 2)
+    while (not found):
+        value += 2
+        found = is_prime(value)
+    return value
 
 def make_hash(ribbon, the_prime, table_size):
     result = [[]] * table_size
@@ -134,15 +176,26 @@ def internal_longest_path(ribbon):
     min_max = find_min_max(ribbon)
     min = min_max[0]
     max = min_max[1]
-    hash_table = make_hash(ribbon, 91, max)
+    the_prime = find_larger_prime(max)
+    hash_table = make_hash(ribbon, the_prime, max)
 
-    m = len(ribbon)
-    n = len(ribbon[0])
-    for index in range(0, m * n):
-        row = get_row(index, n)
-        col = get_column(index, n)
-        item = ribbon[row][col]
-        print(item)
+    the_list = []
+    for index in range(0, len(hash_table) + 1):
+    # m = len(ribbon)
+        
+        item = hash_table[0][index]
+        the_list.append((item.row, item.col))
+        print("index={index},value={value}, col={col}, row={row}".format(index=index,value=item.value, row=item.row, col=item.col))
+
+    if (len(the_list) > 0):
+        result = tuple(the_list)
+    # m = len(ribbon)
+    # n = len(ribbon[0])
+    # for index in range(0, m * n):
+    #     row = get_row(index, n)
+    #     col = get_column(index, n)
+    #     item = ribbon[row][col]
+        # print(item)
     return result
 
 def validate(ribbon):
@@ -169,7 +222,7 @@ def longest_path(ribbon):
 # print(longest_path(((),())))
 # print(longest_path(((),)))
 # print(longest_path(()))
-longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5)))
+print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
 
-longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5)))
+print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
 
