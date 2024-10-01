@@ -50,10 +50,100 @@
 # choose.
 # Reminder that, for a tuple of length m, tuple[-1] is a reference to the position tuple[m-1].
 
-
 # subroutines if any, go here
+class Item:
+    ''' Class representing the items of the ribbon. '''
+    def __init__(self, value=0, row=None,col=None) -> None:
+        self.value = value
+        self.row = row
+        self.col = col
+
+def universal_hash(key, a, b, N, m):
+    return ((((a * key) + b) % N) % m)
+
+def get_index(row, column, num_cols):
+    return (row * num_cols) + column
+
+def get_column(index, num_cols):
+    return index % num_cols
+
+def get_row(index, num_cols):
+    return int(index / num_cols)
+
+def find_min_max(ribbon):
+    min = 0
+    max = 0
+    m = len(ribbon)
+    n = len(ribbon[0])
+    for index in range(0, m * n):
+        row = get_row(index, n)
+        col = get_column(index, n)
+        item = ribbon[row][col]
+        if (item > max):
+            max = item
+        if (item < min):
+            min = item
+    return (min, max)
+
 def internal_longest_path(ribbon):
-    pass
+    result = ()
+    m = len(ribbon)
+    n = len(ribbon[0])
+    for index in range(0, m * n):
+        row = get_row(index, n)
+        col = get_column(index, n)
+        item = ribbon[row][col]
+        print(item)
+    return result
+
+def iterate_ribbon(ribbon):
+    result = ()
+    m = len(ribbon)
+    n = len(ribbon[0])
+    for index in range(0, m * n):
+        row = get_row(index, n)
+        col = get_column(index, n)
+        item = ribbon[row][col]
+        print(item)
+    return result
+
+def find_larger_prime(larger_than):
+    return 11
+
+def make_hash(ribbon, the_prime, table_size):
+    result = [[]] * table_size
+    try:
+        m = len(ribbon)
+        n = len(ribbon[0])
+        for index in range(0, m * n):
+            row = get_row(index, n)
+            col = get_column(index, n)
+            item = ribbon[row][col]
+            the_item = Item(item, row, col)
+
+            hash = universal_hash(item, 1, 0, the_prime, table_size)
+            
+            result[hash].append(the_item)
+            # result[hash] = Item(item, row, col)
+    except Exception as ex:
+        print(ex)
+    return result
+
+def internal_longest_path(ribbon):
+    result = ()
+    min_max = find_min_max(ribbon)
+    min = min_max[0]
+    max = min_max[1]
+    hash_table = make_hash(ribbon, 91, max)
+
+    m = len(ribbon)
+    n = len(ribbon[0])
+    for index in range(0, m * n):
+        row = get_row(index, n)
+        col = get_column(index, n)
+        item = ribbon[row][col]
+        print(item)
+    return result
 
 def validate(ribbon):
     assert(ribbon is not None)
@@ -76,8 +166,10 @@ def longest_path(ribbon):
 
 
 # testing
-print(longest_path(((),())))
-print(longest_path(((),)))
-print(longest_path(()))
-# longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5)))
+# print(longest_path(((),())))
+# print(longest_path(((),)))
+# print(longest_path(()))
+longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5)))
+
+longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5)))
 
