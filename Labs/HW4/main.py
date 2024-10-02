@@ -136,22 +136,24 @@ def get_ribbon_value(ribbon, line_index):
     return ribbon[row][col]
 
 
-def groups_starts_with_smallest_value(group, ribbon):
+def starts_smallest_value_increases(group, ribbon):
     start_index = group.list[0]
     start_value = get_ribbon_value(ribbon, start_index)
     is_passed = True
+    last_value = start_value
     for index in range(1, len(group.list)):
         item_value = get_ribbon_value(ribbon, index)
-        if start_value >= item_value:
+        if start_value >= item_value or item_value < last_value:
             is_passed = False
             break
+        last_value = item_value
     return is_passed
 
 
 def is_valid_group(group, ribbon):
     total_greater_than_zero = (group.total > 0)
     length_at_least_two = (len(group.list) >= 2)
-    starts_smallest = groups_starts_with_smallest_value(group, ribbon)
+    starts_smallest = starts_smallest_value_increases(group, ribbon)
     is_valid = (total_greater_than_zero and length_at_least_two and starts_smallest)
     return is_valid
 

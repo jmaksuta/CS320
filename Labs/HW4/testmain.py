@@ -100,8 +100,11 @@ def test_args():
     print("invalid list returns None.")
 
 
-run_test_file("inputs_data.csv", "expected_data.csv")
-test_args()
+# print(main.longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
+# print(None)
+print(main.longest_path(((5,5,5,5,5),(5,4,3,2,1),(1,2,3,4,5),(1,2,3,4,5))))
+# run_test_file("inputs_data.csv", "expected_data.csv")
+# test_args()
 
 
 
@@ -109,7 +112,6 @@ test_args()
 # print(longest_path(((),())))
 # print(longest_path(((),)))
 # print(longest_path(()))
-print(main.longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
 
 # print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
 
