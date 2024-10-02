@@ -129,13 +129,40 @@ def make_all_trails(ribbon):
     return result    
 
 
+def get_ribbon_value(ribbon, line_index):
+    num_cols = len(ribbon[0])
+    row = get_row(line_index, num_cols)
+    col = get_column(line_index, num_cols)
+    return ribbon[row][col]
+
+
+def groups_starts_with_smallest_value(group, ribbon):
+    start_index = group.list[0]
+    start_value = get_ribbon_value(ribbon, start_index)
+    is_passed = True
+    for index in range(1, len(group.list)):
+        item_value = get_ribbon_value(ribbon, index)
+        if start_value >= item_value:
+            is_passed = False
+            break
+    return is_passed
+
+
+def is_valid_group(group, ribbon):
+    total_greater_than_zero = (group.total > 0)
+    length_at_least_two = (len(group.list) >= 2)
+    starts_smallest = groups_starts_with_smallest_value(group, ribbon)
+    is_valid = (total_greater_than_zero and length_at_least_two and starts_smallest)
+    return is_valid
+
+
 # Returns a group with the highest aggregate value.
-def find_max_group(trail_groups):
+def find_max_group(ribbon, trail_groups):
     result = None
     max = 0
     for index in range(0, len(trail_groups)):
         group = trail_groups[index]
-        if group.total > max:
+        if group.total > max and is_valid_group(group, ribbon):
             max = group.total
             result = group
     return result
@@ -155,7 +182,7 @@ def to_coord_tuple(the_list, num_cols):
 def internal_longest_path(ribbon):
     result = ()
     groups = make_all_trails(ribbon)
-    max_group = find_max_group(groups)
+    max_group = find_max_group(ribbon, groups)
     if max_group is not None:
         n = len(ribbon[0])
         result = to_coord_tuple(max_group.list, n)
@@ -187,3 +214,5 @@ def longest_path(ribbon):
         print(e)
         result = None
     return result
+
+print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
