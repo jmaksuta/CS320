@@ -53,6 +53,49 @@ import math
 # Reminder that, for a tuple of length m, tuple[-1] is a reference to the position tuple[m-1].
 
 # subroutines if any, go here
+# algorithm L from knuth for permutation
+# returns None if no permutations possible
+
+
+def algL(list):
+    if ((list is None) or (len(list) <= 1)):
+        return None
+
+    n = len(list)
+
+    #  differs from Knuth as Knuth indexes arrays from 1 rather than 0
+    j = n - 2
+
+    while ((j >= 0) and (list[j] >= list[j+1])):
+        j -= 1
+
+    if (j == -1):
+        return None
+
+    # flip adjacent positions
+    f = n - 1
+    while (list[j] >= list[f]):
+        f -= 1
+
+    temp = list[f]
+    list[f] = list[j]
+    list[j] = temp
+
+    # now put everything past the flip in sorted order
+    f = n-1
+    k = j + 1
+    while (k < f):
+        temp = list[k]
+        list[k] = list[f]
+        list[f] = temp
+        k += 1
+        f -= 1
+
+    return list
+
+
+
+
 class Item:
     ''' Class representing the items of the ribbon. '''
     def __init__(self, value=0, row=None,col=None) -> None:
@@ -171,24 +214,193 @@ def make_hash(ribbon, the_prime, table_size):
         print(ex)
     return result
 
+class TrailItem:
+    ''' Class representing the items of the trail table. '''
+    def __init__(self) -> None:
+        self.total = 0
+        self.trail = []
+
+    def append(self, index, value):
+        self.trail.append(index)
+        self.total += value
+
+    def appendTrail(self, trail_item):
+        self.trail = trail_item.trail + self.trail
+        self.value += trail_item.value
+
+
+class TrailItemGroup:
+    ''' Class representing the items of the trail table. '''
+    def __init__(self, num_cols) -> None:
+        self.total = 0
+        self.trail = [TrailItem(),TrailItem(),TrailItem()]
+
+    def append(self, index, value):
+        self.trail[0].append(index, value)
+        self.trail[1].append(index, value)
+        self.trail[2].append(index, value)
+
+def build_trail_table(ribbon):
+    m = len(ribbon)
+    n = len(ribbon[0])
+    table_size = m * n
+    result = [TrailItemGroup(n)] * table_size
+    
+    for index in range(0, (table_size - n) + 1):
+        row = int(index / n)
+        col = index % n
+        value = ribbon[row][col]
+
+        result[index].append(index, value)
+
+        child_row = row + 1
+        left_index = (child_row * n) + (((col - 1) + n) % n)
+        bottom_index = (child_row * n) + (col)
+        right_index = (child_row * n) + (((col + 1) - n) % n)
+
+        my_left_trail = result[index].trail[0]
+        my_center_trail = result[index].trail[1]
+        my_right_trail = result[index].trail[2]
+
+        result[left_index].trail[2].append( index, value)
+        result[bottom_index].trail[1].append(index, value)
+        result[right_index].trail[0].append(index, value)
+
+        # left = ribbon[row + 1][((col - 1) + n) % n]
+        # bottom = ribbon[row + 1][col]
+        # right = ribbon[row + 1][((col + 1) - n) % n]
+
+        # left.append(index)
+        # bottom.append(index)
+        # right.append(index)
+
+    return result
+
+def in_bounds(n_index, left, right):
+    result = False
+    if left < right:
+        result = (n_index >= left and n_index <= right)
+    else:
+        result = (n_index >= left or n_index <= right)
+    return result
+
+def append_trails(lists, element, num_cols):
+    result = []
+    for a_list in lists:
+        new_list = []
+        # new_list += a_list
+        last_elem = a_list[len(a_list) - 1]
+        l_bound = ((last_elem - 1) + num_cols) % num_cols
+        r_bound = ((last_elem + 1) - num_cols) % num_cols
+        n_index = element % num_cols
+        if last_elem == None or in_bounds(n_index, l_bound, r_bound):
+            new_list[:] = a_list
+            new_list.append(element)
+            result.append(new_list)
+        # result.append(a_list + element)
+        # a_list.append(element)
+    return result
+
+
+def make_trails(ribbon, trails, current_row, left_Bound, length):
+    result = []
+    m = len(ribbon)
+    n = len(ribbon[0])
+    new_trails = trails
+    for index in range(left_Bound, left_Bound + length):
+        col = (index + n) % n
+        row = current_row
+        element = ribbon[row][col]
+        elem_index = (row * n) + col
+        new_trails = append_trails(trails, elem_index, n)
+        result += new_trails
+    return result
+
+def make_all_trails(ribbon):
+    m = len(ribbon)
+    n = len(ribbon[0])
+    table_length = (m * n)
+
+    result = []
+    for index in range(0, n):
+        trails = []
+        current_row = 0
+        left_Bound = index
+        right_bound = index
+        while current_row < m:
+            if current_row == 0:
+                # add the index to the trail
+                trails.append([index])
+            else:
+                left_Bound = ((index - ((current_row - 1) + 1)) + n) % n
+                right_bound = ((index + ((current_row - 1) + 1)) - n) % n
+                length = ((index + ((current_row - 1) + 1)) - (index - ((current_row - 1) + 1))) + 1
+                trails = make_trails(ribbon, trails, current_row, left_Bound, length)
+            current_row += 1
+        result += trails
+    return result    
+
+
+
+def get_permutation(ribbon, start_column_index):
+    # index = start_column_index
+    m = len(ribbon)
+    n = len(ribbon[0])
+    table_length = (m * n)
+    current_row = 0
+    trails = [[],] * n
+    
+    for index in range(0, table_length):
+        col = index % n
+        row = int(index / n)
+
+
+
+
+def flatten(ribbon):
+    m = len(ribbon)
+    n = len(ribbon[0])
+    result = []
+    try:
+        for index in range(0, m * n):
+            row = get_row(index, n)
+            col = get_column(index, n)
+            item = ribbon[row][col]
+            
+            result.append((row, col, item))
+            
+    except Exception as ex:
+        print(ex)
+    return result
+
 def internal_longest_path(ribbon):
     result = ()
-    min_max = find_min_max(ribbon)
-    min = min_max[0]
-    max = min_max[1]
-    the_prime = find_larger_prime(max)
-    hash_table = make_hash(ribbon, the_prime, max)
+    trails = make_all_trails(ribbon)
 
-    the_list = []
-    for index in range(0, len(hash_table) + 1):
-    # m = len(ribbon)
+    
+    # result = get_permutation(ribbon, 0)
+    # flat_matrix = flatten(ribbon)
+    # set = flat_matrix
+    # while (set != None):
+    #     print(set)
+    #     set = algL(set)
+    # min_max = find_min_max(ribbon)
+    # min = min_max[0]
+    # max = min_max[1]
+    # the_prime = find_larger_prime(max)
+    # trail_table = build_trail_table(ribbon)
+    # hash_table = make_hash(ribbon, the_prime, max)
+
+    # the_list = []
+    # for index in range(0, len(hash_table) + 1):
+    # # m = len(ribbon)
         
-        item = hash_table[0][index]
-        the_list.append((item.row, item.col))
-        print("index={index},value={value}, col={col}, row={row}".format(index=index,value=item.value, row=item.row, col=item.col))
+    #     item = hash_table[0][index]
+    #     the_list.append((item.row, item.col))
+    #     print("index={index},value={value}, col={col}, row={row}".format(index=index,value=item.value, row=item.row, col=item.col))
 
-    if (len(the_list) > 0):
-        result = tuple(the_list)
+    # if (len(the_list) > 0):
+    #     result = tuple(the_list)
     # m = len(ribbon)
     # n = len(ribbon[0])
     # for index in range(0, m * n):
@@ -213,7 +425,8 @@ def longest_path(ribbon):
         if len(result) < 2:
             result = ()
 
-    except (AssertionError):
+    except AssertionError as e:
+        print(e)
         result = None
     return result
 
@@ -224,5 +437,5 @@ def longest_path(ribbon):
 # print(longest_path(()))
 print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
 
-print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
+# print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
 
