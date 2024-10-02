@@ -1,3 +1,11 @@
+"""
+Lab 04 - HW4
+62.2 Lab 4: Longest Path
+Written By John Maksuta
+CS320-801 Fall 2024
+Dr. Partridge
+"""
+
 import math
 
 # 62.2
