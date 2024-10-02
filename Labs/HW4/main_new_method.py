@@ -74,13 +74,18 @@ def _greater_than(left_operand, right_operand):
     return left_operand > right_operand
 
 
-def insert(the_heap, element=None) -> None:
+def insert(the_heap, element=None, ribbon=(())) -> None:
     """ Inserts an element into the heap and heapifys. """
     the_heap.append(element)
     last_index = len(the_heap) - 1
     current_index = last_index
-    while current_index > 0 and _greater_than(the_heap[int((current_index - 1) / 2)],
-                                              the_heap[current_index]):
+    ROW_INDEX = 0
+    COL_INDEX = 1
+    VALUE_INDEX = 2
+    while current_index > 0 and _greater_than(
+            the_heap[int((current_index - 1) / 2)][VALUE_INDEX],
+            the_heap[current_index][VALUE_INDEX]
+            ):
         parent_index = int((current_index - 1) / 2)
         child_index = current_index
         _swap(the_heap, parent_index, child_index)
@@ -91,8 +96,9 @@ def insert(the_heap, element=None) -> None:
 def _index_of_smaller(the_heap, index_a, index_b):
     """ Compares element at index_a with element at index_b and
     returns the index of the smaller of the two."""
+    VALUE_INDEX = 2
     result = -1
-    if the_heap[index_a] <= the_heap[index_b]:
+    if the_heap[index_a][VALUE_INDEX] <= the_heap[index_b][VALUE_INDEX]:
         result = index_a
     else:
         result = index_b
@@ -113,6 +119,9 @@ def _nth_elem(the_heap, n):
 def remove_minimum_element(the_heap):
     """ Removes the minimum element from the heap, the first element,
     and heapifys"""
+    ROW_INDEX = 0
+    COL_INDEX = 1
+    VALUE_INDEX = 2
     temp = the_heap[0]
     length_of_list = len(the_heap)
     the_heap[0] = _nth_elem(the_heap, length_of_list)
@@ -123,8 +132,8 @@ def remove_minimum_element(the_heap):
         index_a = (2 * current_index) + 1
         index_b = (2 * current_index) + 2
         if index_b < length_of_list:
-            current_less_than_child_a = the_heap[current_index] <= the_heap[index_a]
-            current_less_than_child_b = the_heap[current_index] <= the_heap[index_b]
+            current_less_than_child_a = the_heap[current_index][VALUE_INDEX] <= the_heap[index_a][VALUE_INDEX]
+            current_less_than_child_b = the_heap[current_index][VALUE_INDEX] <= the_heap[index_b][VALUE_INDEX]
             if current_less_than_child_a and current_less_than_child_b:
                 return temp
             else:
@@ -133,19 +142,19 @@ def remove_minimum_element(the_heap):
                 current_index = smaller_index
         else:
             if index_a < length_of_list:
-                if the_heap[current_index] > the_heap[index_a]:
+                if the_heap[current_index][VALUE_INDEX] > the_heap[index_a][VALUE_INDEX]:
                     _swap(the_heap, current_index, index_a)
             return temp
     return temp           
 
 
-def internal_heapsort(hlist):
+def internal_heapsort(hlist, ribbon):
     """ Performs the heapsort on the list. """
     result = []
     the_heap = []
     for index in range(0, len(hlist)):
-        input_value = int(hlist[index])
-        insert(the_heap, input_value)
+        input_value = hlist[index]
+        insert(the_heap, input_value, ribbon)
 
     while len(the_heap) > 0: 
         result.append(remove_minimum_element(the_heap))
@@ -153,23 +162,24 @@ def internal_heapsort(hlist):
     return result
 
 
-def validate(hlist):
+def validate_heaplist(hlist):
     """ Validates the input argument. """
     hlist_not_none = hlist is not None
     passed = hlist_not_none
     return passed
 
 
-def heapsort(hlist):
+def heapsort(hlist, ribbon):
     """ Performs a heapsort on hlist. Returns None if hlist is None."""
     result = None
     try:
-        if validate(hlist):
+        if validate_heaplist(hlist):
             # creates a working copy of the input argument,
             # so changes are not affecting the input.
             working_copy = list(hlist)
-            result = internal_heapsort(working_copy)
+            result = internal_heapsort(working_copy, ribbon)
     except Exception as e:
+        print(e)
         result = None
     return result
 
@@ -232,6 +242,11 @@ def get_column(index, num_cols):
 
 def get_row(index, num_cols):
     return int(index / num_cols)
+
+def get_value(ribbon, line_index, num_cols):
+    row = get_row(line_index, num_cols)
+    col = get_column(line_index, num_cols)
+    return ribbon[row][col]
 
 def find_min_max(ribbon):
     min = 0
@@ -537,11 +552,18 @@ def find_max_group(trail_groups):
             result = group
     return result
 
+def print_values(item_list):
+    VALUE_INDEX = 2
+    for index in range(0, len(item_list)):
+        print(item_list[index][VALUE_INDEX], end=", ")
+
 
 def internal_longest_path(ribbon):
     result = ()
     flat_list = flatten(ribbon)
-    
+    sorted_list = heapsort(flat_list, ribbon)
+    print("Sorted")
+    print_values(sorted_list)
     # groups = make_all_trails(ribbon)
     # max_group = find_max_group(groups)
     # if max_group != None:
