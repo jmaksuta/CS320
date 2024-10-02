@@ -103,3 +103,13 @@ def test_args():
 run_test_file("inputs_data.csv", "expected_data.csv")
 test_args()
 
+
+
+# testing
+# print(longest_path(((),())))
+# print(longest_path(((),)))
+# print(longest_path(()))
+print(main.longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
+
+# print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
+
