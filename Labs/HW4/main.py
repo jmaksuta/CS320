@@ -214,6 +214,28 @@ def make_hash(ribbon, the_prime, table_size):
         print(ex)
     return result
 
+class Element:
+    ''' Class representing the items of the trail table. '''
+    def __init__(self, index=-1, value=0) -> None:
+        self.index = index
+        self.value = value
+
+class ElementTrail:
+    def __init__(self, total=0, list=[]) -> None:
+        self.total = total
+        self.list = list
+
+    def addElement(self, element=None) -> None:
+        self.total += element.value
+        self.list.append(element.index)
+
+    def get_last_element(self):
+        result = None
+        length = len(self.list)
+        if length > 0:
+            result = self.list[length - 1]
+        return result
+
 class TrailItem:
     ''' Class representing the items of the trail table. '''
     def __init__(self) -> None:
@@ -289,18 +311,25 @@ def append_trails(lists, element, num_cols):
     for a_list in lists:
         new_list = []
         # new_list += a_list
-        last_elem = a_list[len(a_list) - 1]
+        last_elem = a_list.get_last_element()
+        # last_elem = a_list[len(a_list.list) - 1]
         l_bound = ((last_elem - 1) + num_cols) % num_cols
         r_bound = ((last_elem + 1) - num_cols) % num_cols
-        n_index = element % num_cols
-        if last_elem == None or in_bounds(n_index, l_bound, r_bound):
-            new_list[:] = a_list
-            new_list.append(element)
-            result.append(new_list)
-        # result.append(a_list + element)
-        # a_list.append(element)
+        n_index = element.index % num_cols
+        if in_bounds(n_index, l_bound, r_bound):
+            new_group = ElementTrail(a_list.total, list(a_list.list))
+            new_group.addElement(element)
+            result.append(new_group)
+            # new_list[:] = a_list
+            # new_list.append(element_index)
+            # result.append(new_list)
+
+        # result.append(a_list + element_index)
+        # a_list.append(element_index)
     return result
 
+def linear_index(row, col, num_cols):
+    return (row * num_cols) + col
 
 def make_trails(ribbon, trails, current_row, left_Bound, length):
     result = []
@@ -310,9 +339,10 @@ def make_trails(ribbon, trails, current_row, left_Bound, length):
     for index in range(left_Bound, left_Bound + length):
         col = (index + n) % n
         row = current_row
-        element = ribbon[row][col]
-        elem_index = (row * n) + col
-        new_trails = append_trails(trails, elem_index, n)
+        value = ribbon[row][col]
+        l_index = linear_index(row, col, n)
+        element = Element(l_index, value)
+        new_trails = append_trails(trails, element, n)
         result += new_trails
     return result
 
@@ -330,7 +360,13 @@ def make_all_trails(ribbon):
         while current_row < m:
             if current_row == 0:
                 # add the index to the trail
-                trails.append([index])
+                l_index = linear_index(current_row, index, n)
+                value = ribbon[current_row][index]
+                # element = Element(l_index, value)
+                group = ElementTrail(value, [l_index])
+                # group.addElement(element)
+                trails.append(group)
+                # trails.append(TrailItemGroup()[index])
             else:
                 left_Bound = ((index - ((current_row - 1) + 1)) + n) % n
                 right_bound = ((index + ((current_row - 1) + 1)) - n) % n
@@ -373,11 +409,24 @@ def flatten(ribbon):
         print(ex)
     return result
 
+def find_max_group(trail_groups):
+    result = None
+    max = 0
+    for index in range(0, len(trail_groups)):
+        group = trail_groups[index]
+        if group.total > max:
+            max = group.total
+            result = group
+    return result
+
+
 def internal_longest_path(ribbon):
     result = ()
-    trails = make_all_trails(ribbon)
+    groups = make_all_trails(ribbon)
+    max_group = find_max_group(groups)
+    if max_group != None:
+        result = tuple(max_group.list)
 
-    
     # result = get_permutation(ribbon, 0)
     # flat_matrix = flatten(ribbon)
     # set = flat_matrix
