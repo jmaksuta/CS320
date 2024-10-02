@@ -140,6 +140,7 @@ def find_max_group(trail_groups):
             result = group
     return result
 
+
 def to_coord_tuple(the_list, num_cols):
     result = []
     for index in range(0, len(the_list)):
@@ -148,6 +149,7 @@ def to_coord_tuple(the_list, num_cols):
         col = get_column(l_index, num_cols)
         result.append((row, col))
     return tuple(result)
+
 
 # This is the internal function that calls main functions.
 def internal_longest_path(ribbon):
