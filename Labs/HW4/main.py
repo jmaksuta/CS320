@@ -214,5 +214,3 @@ def longest_path(ribbon):
         print(e)
         result = None
     return result
-
-print(longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
