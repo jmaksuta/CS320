@@ -225,7 +225,7 @@ def make_trails(sorted_list):
 
 def find_longest_trail(trails):
     result = None
-    max = 0
+    max = -999
     result_index = -1
     for index in range(0, len(trails)):
         if trails[index].total > max and len(trails[index].trail) >= 2:
