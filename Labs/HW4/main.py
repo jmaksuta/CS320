@@ -7,204 +7,262 @@ Dr. Partridge
 """
 
 
+import math
+
+
+ROW_INDEX = 0
+COL_INDEX = 1
+VALUE_INDEX = 2
+
+
+# -----------BEGIN HEAP SORT-------------------
+def _swap(the_heap, up_elem_index, down_elem_index):
+    """ swaps the elements in the list at indices up_elem_index
+    and down_elem_index. """
+    temp = the_heap[up_elem_index]
+    the_heap[up_elem_index] = the_heap[down_elem_index]
+    the_heap[down_elem_index] = temp
+    return
+
+
+def _greater_than(left_operand, right_operand):
+    """ Returns True if left_operand is greater than right_operand. """
+    return left_operand > right_operand
+
+
+def insert(the_heap, element=None, ribbon=(())) -> None:
+    """ Inserts an element into the heap and heapifys. """
+    the_heap.append(element)
+    last_index = len(the_heap) - 1
+    current_index = last_index
+
+    while current_index > 0 and _greater_than(
+            the_heap[int((current_index - 1) / 2)][VALUE_INDEX],
+            the_heap[current_index][VALUE_INDEX]):
+        parent_index = int((current_index - 1) / 2)
+        child_index = current_index
+        _swap(the_heap, parent_index, child_index)
+        current_index = parent_index
+    return
+
+
+def _index_of_smaller(the_heap, index_a, index_b):
+    """ Compares element at index_a with element at index_b and
+    returns the index of the smaller of the two."""
+    result = -1
+    if the_heap[index_a][VALUE_INDEX] <= the_heap[index_b][VALUE_INDEX]:
+        result = index_a
+    else:
+        result = index_b
+    return result
+
+
+def _to_index(nth_value):
+    """ Returns the index value an the nth value.
+    i.e. the nth element has an index n - 1. """
+    return nth_value - 1
+
+
+def _nth_elem(the_heap, n):
+    """ Returns the nth element. """
+    return the_heap[_to_index(n)]
+
+
+def remove_minimum_element(the_heap):
+    """ Removes the minimum element from the heap, the first element,
+    and heapifys"""
+    temp = the_heap[0]
+    length_of_list = len(the_heap)
+    the_heap[0] = _nth_elem(the_heap, length_of_list)
+    length_of_list = length_of_list - 1
+    del the_heap[length_of_list]
+    current_index = 0
+    while current_index < length_of_list:
+        index_a = (2 * current_index) + 1
+        index_b = (2 * current_index) + 2
+        if index_b < length_of_list:
+            current_less_than_child_a = the_heap[current_index][VALUE_INDEX] <= the_heap[index_a][VALUE_INDEX]
+            current_less_than_child_b = the_heap[current_index][VALUE_INDEX] <= the_heap[index_b][VALUE_INDEX]
+            if current_less_than_child_a and current_less_than_child_b:
+                return temp
+            else:
+                smaller_index = _index_of_smaller(the_heap, index_a, index_b)
+                _swap(the_heap, current_index, smaller_index)
+                current_index = smaller_index
+        else:
+            if index_a < length_of_list:
+                if the_heap[current_index][VALUE_INDEX] > the_heap[index_a][VALUE_INDEX]:
+                    _swap(the_heap, current_index, index_a)
+            return temp
+    return temp           
+
+
+def internal_heapsort(hlist, ribbon):
+    """ Performs the heapsort on the list. """
+    result = []
+    the_heap = []
+    for index in range(0, len(hlist)):
+        input_value = hlist[index]
+        insert(the_heap, input_value, ribbon)
+
+    while len(the_heap) > 0: 
+        result.append(remove_minimum_element(the_heap))
+
+    return result
+
+
+def validate_heaplist(hlist):
+    """ Validates the input argument. """
+    hlist_not_none = hlist is not None
+    passed = hlist_not_none
+    return passed
+
+
+def heapsort(hlist, ribbon):
+    """ Performs a heapsort on hlist. Returns None if hlist is None."""
+    result = None
+    try:
+        if validate_heaplist(hlist):
+            # creates a working copy of the input argument,
+            # so changes are not affecting the input.
+            working_copy = list(hlist)
+            result = internal_heapsort(working_copy, ribbon)
+    except Exception as e:
+        print(e)
+        result = None
+    return result
+
+# -----------END HEAP SORT---------------------
+
+
+def get_index(row, column, num_cols):
+    return (row * num_cols) + column
+
+
 def get_column(index, num_cols):
-    """ Returns an index in column-space (n-space). """
     return index % num_cols
 
 
 def get_row(index, num_cols):
-    """ Returns an index in row-space (m-space). """
     return int(index / num_cols)
 
 
-class Element:
-    ''' Class representing the items of the trail table. '''
-    def __init__(self, index=-1, value=0) -> None:
-        """ Creates a new instance of Element. """
-        self.index = index
-        self.value = value
-
-
-class ElementTrail:
-    """ Defines a list of indexes and aggregate value. """
-    def __init__(self, total=0, list=[]) -> None:
-        """ Creates a new instance of ElementTrail. """
-        self.total = total
-        self.list = list
-
-    def addElement(self, element=None) -> None:
-        """ Appends the element to the end of the list and
-        aggregates its value to the total. """
-        self.total += element.value
-        self.list.append(element.index)
-
-    def get_last_element(self):
-        """ Returns the last element of the list. """
-        result = None
-        length = len(self.list)
-        if length > 0:
-            result = self.list[length - 1]
-        return result
-
-
-def in_bounds(n_index, left, right):
-    """ Checks if the index in column-space (n-space) is valid."""
-    result = False
-    if left < right:
-        result = (n_index >= left and n_index <= right)
-    else:
-        result = (n_index >= left or n_index <= right)
-    return result
-
-
-def append_trails(lists, element, num_cols):
-    """ Appends an element to a trail if it is valid. """
-    result = []
-    for a_list in lists:
-        last_elem = a_list.get_last_element()
-        # left column-space bound.
-        l_bound = ((last_elem - 1) + num_cols) % num_cols
-        # right column-space bound.
-        r_bound = ((last_elem + 1) - num_cols) % num_cols
-        # element index is column-space (n-space).
-        n_index = get_column(element.index, num_cols)
-        if in_bounds(n_index, l_bound, r_bound):
-            # this index is within the bounds, its valid.
-            new_group = ElementTrail(a_list.total, list(a_list.list))
-            new_group.addElement(element)
-            result.append(new_group)
-    return result
+def get_value(ribbon, line_index, num_cols):
+    row = get_row(line_index, num_cols)
+    col = get_column(line_index, num_cols)
+    return ribbon[row][col]
 
 
 def linear_index(row, col, num_cols):
     return (row * num_cols) + col
 
 
-def make_trails(ribbon, trails, current_row, left_Bound, length):
-    """ Returns valid trails for the column space indices in boundary. """
-    result = []
+def flatten(ribbon):
     m = len(ribbon)
     n = len(ribbon[0])
-    new_trails = trails
-    # existing trails are the basis for new trails.
-    for index in range(left_Bound, left_Bound + length):
-        col = (index + n) % n
-        row = current_row
-        value = ribbon[row][col]
-        l_index = linear_index(row, col, n)
-        element = Element(l_index, value)
-        new_trails = append_trails(trails, element, n)
-        result += new_trails
+    result = []
+    try:
+        for index in range(0, m * n):
+            row = get_row(index, n)
+            col = get_column(index, n)
+            item = ribbon[row][col]
+            
+            result.append((row, col, item))
+            
+    except Exception as ex:
+        print(ex)
     return result
 
 
-def make_all_trails(ribbon):
-    m = len(ribbon)
-    n = len(ribbon[0])
-    result = []
-    # loops through the columns to find the plenko paths.
-    for index in range(0, n):
-        trails = []
-        current_row = 0
-        left_Bound = index
-        right_bound = index
-        while current_row < m:
-            if current_row == 0:
-                # add the index to the start of trail
-                l_index = linear_index(current_row, index, n)
-                value = ribbon[current_row][index]
-                group = ElementTrail(value, [l_index])
-                trails.append(group)
-            else:
-                # left bound in column space
-                left_Bound = ((index - ((current_row - 1) + 1)) + n) % n
-                # right bound in column space
-                right_bound = ((index + ((current_row - 1) + 1)) - n) % n
-                # length in linear space
-                length = ((index + ((current_row - 1) + 1)) - (index - ((current_row - 1) + 1))) + 1
-                # make trails for the column space indices in boundary.
-                trails = make_trails(ribbon, trails, current_row, left_Bound, length)
-            current_row += 1
-        result += trails
-    return result    
+def print_values(item_list):
+    for index in range(0, len(item_list)):
+        print(item_list[index][VALUE_INDEX], end=", ")
+    print("")
 
 
-def get_ribbon_value(ribbon, line_index):
-    num_cols = len(ribbon[0])
-    row = get_row(line_index, num_cols)
-    col = get_column(line_index, num_cols)
-    return ribbon[row][col]
+class Trail:
+    ''' Class representing the items of the trail table. '''
+    def __init__(self, total=0, trail=[]) -> None:
+        self.total = total
+        self.trail = trail
+
+    def append(self, item):
+        self.trail.append(item)
+        self.total += item[VALUE_INDEX]
+    
+    def get_last_item(self):
+        return self.trail[len(self.trail) - 1]
+    
+    def within_bounds(self, item):
+        last_item = self.get_last_item()
+        item_above = (last_item[ROW_INDEX] == item[ROW_INDEX] and last_item[COL_INDEX] == item[COL_INDEX] + 1)
+        item_below = (last_item[ROW_INDEX] == item[ROW_INDEX] and last_item[COL_INDEX] == item[COL_INDEX] - 1)
+        item_left = (last_item[ROW_INDEX] == item[ROW_INDEX] + 1 and last_item[COL_INDEX] == item[COL_INDEX])
+        item_right = (last_item[ROW_INDEX] == item[ROW_INDEX] - 1 and last_item[COL_INDEX] == item[COL_INDEX])
+        return (item_above or item_below or item_left or item_right)
 
 
-def starts_smallest_value_increases(group, ribbon):
-    start_index = group.list[0]
-    start_value = get_ribbon_value(ribbon, start_index)
-    is_passed = True
-    last_value = start_value
-    for index in range(1, len(group.list)):
-        item_value = get_ribbon_value(ribbon, index)
-        if start_value >= item_value or item_value < last_value:
-            is_passed = False
-            break
-        last_value = item_value
-    return is_passed
+def append_to_trails(trails, item):
+    
+    if len(trails) == 0:
+        new_trail = Trail(item[VALUE_INDEX], [item])
+        trails.append(new_trail)
+    else:
+        for trail in trails:
+            if trail.within_bounds(item):
+                trail.append(item)
+        new_trail = Trail(item[VALUE_INDEX], [item])
+        trails.append(new_trail)
+    return trails
 
 
-def is_valid_group(group, ribbon):
-    total_greater_than_zero = (group.total > 0)
-    length_at_least_two = (len(group.list) >= 2)
-    starts_smallest = starts_smallest_value_increases(group, ribbon)
-    is_valid = (total_greater_than_zero and length_at_least_two and starts_smallest)
-    return is_valid
+def make_trails(sorted_list):
+    trails = []
+    for index in range(0, len(sorted_list)):
+        trails = append_to_trails(trails, sorted_list[index])
+    return trails
 
 
-# Returns a group with the highest aggregate value.
-def find_max_group(ribbon, trail_groups):
+def find_longest_trail(trails):
     result = None
     max = 0
-    for index in range(0, len(trail_groups)):
-        group = trail_groups[index]
-        if group.total > max and is_valid_group(group, ribbon):
-            max = group.total
-            result = group
+    result_index = -1
+    for index in range(0, len(trails)):
+        if trails[index].total > max and len(trails[index].trail) >= 2:
+            max = trails[index].total
+            result_index = index
+    if result_index != -1:
+        result = trails[result_index]
     return result
 
 
-def to_coord_tuple(the_list, num_cols):
+def package_result(list_of_items):
     result = []
-    for index in range(0, len(the_list)):
-        l_index = the_list[index]
-        row = get_row(l_index, num_cols)
-        col = get_column(l_index, num_cols)
-        result.append((row, col))
+    for index in range(0, len(list_of_items)):
+        result.append((list_of_items[index][ROW_INDEX], list_of_items[index][COL_INDEX]))
     return tuple(result)
 
 
-# This is the internal function that calls main functions.
 def internal_longest_path(ribbon):
     result = ()
-    groups = make_all_trails(ribbon)
-    max_group = find_max_group(ribbon, groups)
-    if max_group is not None:
-        n = len(ribbon[0])
-        result = to_coord_tuple(max_group.list, n)
-
+    flat_list = flatten(ribbon)
+    sorted_list = heapsort(flat_list, ribbon)
+    trails = make_trails(sorted_list)
+    longest = find_longest_trail(trails)
+    if longest is not None:
+        result = package_result(longest.trail)
     return result
 
 
-# Validates the input argument
 def validate(ribbon):
-    # ribbon is not none
     assert (ribbon is not None)
-    # row length is not zero
     assert (len(ribbon) > 0)
-    # column length is not zero
     assert (len(ribbon[0]) > 0)
     return
 
 
+# fill in your code
 def longest_path(ribbon):
-    """ Returns the longest path of the ribbon. """
     result = ()
     try:
         validate(ribbon)
