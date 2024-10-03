@@ -193,33 +193,43 @@ class Trail:
     def get_last_item(self):
         return self.trail[len(self.trail) - 1]
     
-    def within_bounds(self, item):
+    def within_bounds(self, item, ribbon):
+        m = len(ribbon)
+        n = len(ribbon[0])
         last_item = self.get_last_item()
-        item_above = (last_item[ROW_INDEX] == item[ROW_INDEX] and last_item[COL_INDEX] == item[COL_INDEX] + 1)
-        item_below = (last_item[ROW_INDEX] == item[ROW_INDEX] and last_item[COL_INDEX] == item[COL_INDEX] - 1)
-        item_left = (last_item[ROW_INDEX] == item[ROW_INDEX] + 1 and last_item[COL_INDEX] == item[COL_INDEX])
-        item_right = (last_item[ROW_INDEX] == item[ROW_INDEX] - 1 and last_item[COL_INDEX] == item[COL_INDEX])
+        same_row = (last_item[ROW_INDEX] == item[ROW_INDEX])
+        same_col = (last_item[COL_INDEX] == item[COL_INDEX])
+        is_last_top = (last_item[ROW_INDEX] == 0)
+        is_last_bottom = (last_item[ROW_INDEX] == (m - 1))
+        up_one = last_item[ROW_INDEX] == item[ROW_INDEX] + 1
+        down_one = last_item[ROW_INDEX] == item[ROW_INDEX] - 1
+        left_one = last_item[COL_INDEX] == (item[COL_INDEX] + 1) % n
+        right_one = last_item[COL_INDEX] == (item[COL_INDEX] - 1) % n
+        item_above = (not is_last_top and up_one and same_col)
+        item_below = (not is_last_bottom and down_one and same_col)
+        item_left = (same_row and left_one)
+        item_right = (same_row and right_one)
         return (item_above or item_below or item_left or item_right)
 
 
-def append_to_trails(trails, item):
+def append_to_trails(trails, item, ribbon):
     
     if len(trails) == 0:
         new_trail = Trail(item[VALUE_INDEX], [item])
         trails.append(new_trail)
     else:
         for trail in trails:
-            if trail.within_bounds(item):
+            if trail.within_bounds(item, ribbon):
                 trail.append(item)
         new_trail = Trail(item[VALUE_INDEX], [item])
         trails.append(new_trail)
     return trails
 
 
-def make_trails(sorted_list):
+def make_trails(sorted_list, ribbon):
     trails = []
     for index in range(0, len(sorted_list)):
-        trails = append_to_trails(trails, sorted_list[index])
+        trails = append_to_trails(trails, sorted_list[index], ribbon)
     return trails
 
 
@@ -247,7 +257,7 @@ def internal_longest_path(ribbon):
     result = ()
     flat_list = flatten(ribbon)
     sorted_list = heapsort(flat_list, ribbon)
-    trails = make_trails(sorted_list)
+    trails = make_trails(sorted_list, ribbon)
     longest = find_longest_trail(trails)
     if longest is not None:
         result = package_result(longest.trail)
