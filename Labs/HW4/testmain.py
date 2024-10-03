@@ -99,6 +99,14 @@ def test_args():
     assert result5 == None
     print("invalid list returns None.")
 
+VALUE_INDEX = 2
+
+def print_values(item_list):
+    for index in range(0, len(item_list)):
+        print(item_list[index][VALUE_INDEX], end=", ")
+    print("")
+
+
 
 print(main.longest_path(((1,0,0,0,2),(4,0,0,0,3),(5,0,0,0,6),(8,0,0,0,7))))
 

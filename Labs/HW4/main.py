@@ -7,9 +7,6 @@ Dr. Partridge
 """
 
 
-import math
-
-
 ROW_INDEX = 0
 COL_INDEX = 1
 VALUE_INDEX = 2
@@ -135,29 +132,30 @@ def heapsort(hlist, ribbon):
 # -----------END HEAP SORT---------------------
 
 
-def get_index(row, column, num_cols):
-    return (row * num_cols) + column
-
-
 def get_column(index, num_cols):
+    """ Returns a column coordinate given a linear index. """
     return index % num_cols
 
 
 def get_row(index, num_cols):
+    """ Returns a row coordinate given a linear index. """
     return int(index / num_cols)
 
 
 def get_value(ribbon, line_index, num_cols):
+    """ returns the value of ribbon at given linear index. """
     row = get_row(line_index, num_cols)
     col = get_column(line_index, num_cols)
     return ribbon[row][col]
 
 
 def linear_index(row, col, num_cols):
+    """ Returns the linear index of (row,col) matrix coordinate. """
     return (row * num_cols) + col
 
 
 def flatten(ribbon):
+    """ Flattens the ribbon matrix into a 1-dimensional list. """
     m = len(ribbon)
     n = len(ribbon[0])
     result = []
@@ -174,12 +172,6 @@ def flatten(ribbon):
     return result
 
 
-def print_values(item_list):
-    for index in range(0, len(item_list)):
-        print(item_list[index][VALUE_INDEX], end=", ")
-    print("")
-
-
 class Trail:
     ''' Class representing the items of the trail table. '''
     def __init__(self, total=0, trail=[]) -> None:
@@ -187,13 +179,16 @@ class Trail:
         self.trail = trail
 
     def append(self, item):
+        """ Appends and item to the trail and aggregates the total. """
         self.trail.append(item)
         self.total += item[VALUE_INDEX]
     
     def get_last_item(self):
+        """ Returns the last item of the trail. """
         return self.trail[len(self.trail) - 1]
     
     def is_valid_next_stop(self, item, ribbon):
+        """ Validates if item is a valid next stop on the trail. """
         m = len(ribbon)
         n = len(ribbon[0])
         last_item = self.get_last_item()
@@ -215,7 +210,8 @@ class Trail:
 
 
 def append_to_trails(trails, item, ribbon):
-    
+    """ Appends an item to a trail, and inserts it as the start of a new trail,
+    then returns the trail."""
     if len(trails) == 0:
         new_trail = Trail(item[VALUE_INDEX], [item])
         trails.append(new_trail)
@@ -229,14 +225,15 @@ def append_to_trails(trails, item, ribbon):
 
 
 def make_trails(sorted_list, ribbon):
+    """ Makes the trails from the sorted list. """
     trails = []
     for index in range(0, len(sorted_list)):
-        # if sorted_list[index][VALUE_INDEX] > 0:
         trails = append_to_trails(trails, sorted_list[index], ribbon)
     return trails
 
 
 def find_longest_trail(trails):
+    """ Finds the longest length trail from the list and returns it. """
     result = None
     max = -999
     result_index = -1
@@ -250,12 +247,14 @@ def find_longest_trail(trails):
 
 
 def package_result(list_of_items):
+    """ Returns the result as a tuple of (x, y) tuples. """
     result = []
     for index in range(0, len(list_of_items)):
         result.append((list_of_items[index][ROW_INDEX], list_of_items[index][COL_INDEX]))
     return tuple(result)
 
 
+# This is the internal function that calls main functions.
 def internal_longest_path(ribbon):
     result = ()
     flat_list = flatten(ribbon)
@@ -267,6 +266,7 @@ def internal_longest_path(ribbon):
     return result
 
 
+# Validates the input argument
 def validate(ribbon):
     assert (ribbon is not None)
     assert (len(ribbon) > 0)
@@ -276,6 +276,7 @@ def validate(ribbon):
 
 # fill in your code
 def longest_path(ribbon):
+    """ Returns the longest path of the ribbon. """
     result = ()
     try:
         validate(ribbon)
