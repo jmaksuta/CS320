@@ -229,8 +229,8 @@ def append_to_trails(trails, item, ribbon):
 def make_trails(sorted_list, ribbon):
     trails = []
     for index in range(0, len(sorted_list)):
-        if sorted_list[index][VALUE_INDEX] > 0:
-            trails = append_to_trails(trails, sorted_list[index], ribbon)
+        # if sorted_list[index][VALUE_INDEX] > 0:
+        trails = append_to_trails(trails, sorted_list[index], ribbon)
     return trails
 
 
