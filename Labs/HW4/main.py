@@ -193,10 +193,11 @@ class Trail:
     def get_last_item(self):
         return self.trail[len(self.trail) - 1]
     
-    def within_bounds(self, item, ribbon):
+    def is_valid_next_stop(self, item, ribbon):
         m = len(ribbon)
         n = len(ribbon[0])
         last_item = self.get_last_item()
+        is_increasing_value = last_item[VALUE_INDEX] < item[VALUE_INDEX]
         same_row = (last_item[ROW_INDEX] == item[ROW_INDEX])
         same_col = (last_item[COL_INDEX] == item[COL_INDEX])
         is_last_top = (last_item[ROW_INDEX] == 0)
@@ -209,7 +210,8 @@ class Trail:
         item_below = (not is_last_bottom and down_one and same_col)
         item_left = (same_row and left_one)
         item_right = (same_row and right_one)
-        return (item_above or item_below or item_left or item_right)
+        is_adjacent = (item_above or item_below or item_left or item_right)
+        return (is_increasing_value and is_adjacent)
 
 
 def append_to_trails(trails, item, ribbon):
@@ -219,7 +221,7 @@ def append_to_trails(trails, item, ribbon):
         trails.append(new_trail)
     else:
         for trail in trails:
-            if trail.within_bounds(item, ribbon):
+            if trail.is_valid_next_stop(item, ribbon):
                 trail.append(item)
         new_trail = Trail(item[VALUE_INDEX], [item])
         trails.append(new_trail)
