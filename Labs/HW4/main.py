@@ -239,8 +239,8 @@ def find_longest_trail(trails):
     max = -999
     result_index = -1
     for index in range(0, len(trails)):
-        if trails[index].total > max and len(trails[index].trail) >= 2:
-            max = trails[index].total
+        if len(trails[index].trail) > max and len(trails[index].trail) >= 2:
+            max = len(trails[index].trail)
             result_index = index
     if result_index != -1:
         result = trails[result_index]

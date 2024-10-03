@@ -100,6 +100,8 @@ def test_args():
     print("invalid list returns None.")
 
 
+print(main.longest_path(((1,0,0,0,2),(4,0,0,0,3),(5,0,0,0,6),(8,0,0,0,7))))
+
 # print(main.longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
 # print(None)
 print(main.longest_path(((5,5,5,5,5),(5,4,3,2,1),(1,2,3,4,5),(1,2,3,4,5))))
@@ -122,6 +124,8 @@ print(main.longest_path(((5,5,5,5,5),(5,4,3,2,1),(1,2,3,4,5),(1,2,3,4,5))))
 # print(longest_path(((),)))
 # print(longest_path(()))
 # print(main.longest_path(((1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5),(1,2,3,4,5))))
+
+
 
 print(main.longest_path(((0,0,0,0,0),(0,0,0,0,0),(0,0,0,0,0),(0,0,0,0,0))))
 
