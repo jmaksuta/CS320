@@ -89,6 +89,10 @@ def make_fields(length, num_obstacles):
     field = ((True,) * length,) * length
     return field
 
+def make_full_fields(length):
+    field = ((False,) * length,) * length
+    return field
+
 def test_args():
     result2 = main.placement(None, None)
     assert result2 == None
@@ -109,5 +113,7 @@ def print_values(item_list):
         print(item_list[index][VALUE_INDEX], end=", ")
     print("")
 
-
+print(main.placement(3, make_fields(6, 0)))
 print(main.placement(20, make_fields(20, 0)))
+
+print(main.placement(20, make_full_fields(20)))
