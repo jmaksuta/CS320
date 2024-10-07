@@ -95,15 +95,15 @@ def make_full_fields(length):
 
 def test_args():
     result2 = main.placement(None, None)
-    assert result2 == None
+    assert result2 == ((), ())
     print("None passes.")
 
     result5 = main.placement(45, (()))
-    assert result5 == []
+    assert result5 == ((), ())
     print("empty list passes.")
 
-    result5 = main.placement(["A", "B", "C"])
-    assert result5 == None
+    result5 = main.placement(0,["A", "B", "C"])
+    assert result5 == ((), ())
     print("invalid list returns None.")
 
 VALUE_INDEX = 2
@@ -117,3 +117,6 @@ print(main.placement(3, make_fields(6, 0)))
 print(main.placement(20, make_fields(20, 0)))
 
 print(main.placement(20, make_full_fields(20)))
+
+test_args()
+

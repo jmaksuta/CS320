@@ -55,6 +55,9 @@ def free_spaces(field):
         elif col >= mid and value is True:
             # right side
             right_field.append(index)
+    # shuffle the fields
+    random.shuffle(left_field)
+    random.shuffle(right_field)
     return [left_field, right_field]
 
 
@@ -161,6 +164,9 @@ def internal_placement(num_players, field):
 
 def validate(num_players, field):
     assert field is not None
+    assert type(field) is tuple
+    assert len(field) > 0
+    assert type(field[0]) is tuple
     assert num_players is not None
     assert num_players > 0
 
@@ -174,5 +180,6 @@ def placement(num_players, field):
         result = internal_placement(num_players, field)
 
     except Exception as e:
-        print(e)
+        # print(e)
+        result = ((), ())
     return result
