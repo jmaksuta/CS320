@@ -56,8 +56,8 @@ def free_spaces(field):
             # right side
             right_field.append(index)
     # shuffle the fields
-    random.shuffle(left_field)
-    random.shuffle(right_field)
+    # random.shuffle(left_field)
+    # random.shuffle(right_field)
     return [left_field, right_field]
 
 
@@ -135,29 +135,30 @@ def internal_placement(num_players, field):
     players_per_side = num_players
     flat_matrix = flatten(field)
     
-    free = free_spaces(field)
-    left_free = len(free[0])
-    right_free = len(free[1])
-    number_to_place = get_number_to_place(free, players_per_side)
-    while number_to_place > 0:
-        # place player in pairs
-        # place left
-        left_result = place_player_in_field(flat_matrix, field_length, free[0], left_free)
-        flat_matrix = left_result[0]
-        free[0] = left_result[1]
-        left_field_index = left_result[2]
-        left_field_coordinate = left_result[3]
-        result[0].append(left_field_coordinate)
-        # place right
-        right_result = place_player_in_field(flat_matrix, field_length, free[1], right_free)
-        flat_matrix = right_result[0]
-        free[1] = right_result[1]
-        right_field_index = right_result[2]
-        right_field_coordinate = right_result[3]
-        result[1].append(right_field_coordinate)
-        seed_random()
-        
-        number_to_place -= 1
+    if len(flat_matrix) > 0:
+        free = free_spaces(field)
+        left_free = len(free[0])
+        right_free = len(free[1])
+        number_to_place = get_number_to_place(free, players_per_side)
+        while number_to_place > 0:
+            # place player in pairs
+            # place left
+            left_result = place_player_in_field(flat_matrix, field_length, free[0], left_free)
+            flat_matrix = left_result[0]
+            free[0] = left_result[1]
+            left_field_index = left_result[2]
+            left_field_coordinate = left_result[3]
+            result[0].append(left_field_coordinate)
+            # place right
+            right_result = place_player_in_field(flat_matrix, field_length, free[1], right_free)
+            flat_matrix = right_result[0]
+            free[1] = right_result[1]
+            right_field_index = right_result[2]
+            right_field_coordinate = right_result[3]
+            result[1].append(right_field_coordinate)
+            seed_random()
+            
+            number_to_place -= 1
 
     return package_result(result)
 
@@ -165,7 +166,7 @@ def internal_placement(num_players, field):
 def validate(num_players, field):
     assert field is not None
     assert type(field) is tuple
-    assert len(field) > 0
+    # assert len(field) > 0
     assert type(field[0]) is tuple
     assert num_players is not None
     assert num_players > 0
@@ -181,5 +182,6 @@ def placement(num_players, field):
 
     except Exception as e:
         # print(e)
-        result = ((), ())
+        # result = ((), ())
+        result = None
     return result
