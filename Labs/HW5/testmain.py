@@ -117,9 +117,9 @@ def print_values(item_list):
         print(item_list[index][VALUE_INDEX], end=", ")
     print("")
 
-# print(main.placement(3, make_fields(6, 0)))
-# print(main.placement(20, make_fields(20, 0)))
-# print(main.placement(20, make_full_fields(20)))
+print(main.placement(3, make_fields(6, 0)))
+print(main.placement(20, make_fields(20, 0)))
+print(main.placement(20, make_full_fields(20)))
 print(main.placement(45, (())))
 
 test_args()

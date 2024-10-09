@@ -121,7 +121,8 @@ def flatten(matrix):
 
 
 def seed_random():
-    random.seed(random.randint(1, 1000))
+    # random.seed(random.randint(1, 1000))
+    random.seed()
 
 
 def internal_placement(num_players, field):
