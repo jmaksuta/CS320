@@ -102,6 +102,14 @@ def test_args():
     assert result5 == ((),())
     print("empty field passes.")
 
+    result5 = main.placement(-45, ((),))
+    assert result5 == None
+    print("negative num_players passes.")
+
+    result5 = main.placement(45, None)
+    assert result5 == None
+    print("None field passes.")
+
     result5 = main.placement(45, [[],[]])
     assert result5 == None
     print("passing wrong type passes.")

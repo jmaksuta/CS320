@@ -6,11 +6,12 @@ CS320-801 Fall 2024
 Dr. Partridge
 """
 
-import random  # optional and you can delete this line if not useful
+import random
 import math
 
 
 def get_length(field):
+    """ Returns the length of field in one dimension. """
     return len(field)
 
 
@@ -31,16 +32,9 @@ def get_value(matrix, line_index, num_cols):
     return matrix[row][col]
 
 
-def linear_index(row, col, num_cols):
-    """ Returns the linear index of (row,col) matrix coordinate. """
-    return (row * num_cols) + col
-
-
-def get_random(seed):
-    return random.Random(seed)
-
-
 def free_spaces(field):
+    """ Returns a list of two lists, left and right, and the
+    linear indices of free spaces from field matrix. """
     left_field = []
     right_field = []
     length = len(field)
@@ -55,17 +49,19 @@ def free_spaces(field):
         elif col >= mid and value is True:
             # right side
             right_field.append(index)
-    # shuffle the fields
-    # random.shuffle(left_field)
-    # random.shuffle(right_field)
+
     return [left_field, right_field]
 
 
 def package_result(lists):
+    """ Packages the lists of two lists as tuple of two tuples. """
     return (tuple(lists[0]), tuple(lists[1]))
 
 
 def place_player(flat_matrix, num_cols, index_to_place):
+    """ Sets flat_matrix[index_to_place] = False and returns a
+    tuple of the modified flat matrix, and the matrix coordinate
+    at which the player was placed."""
     row = get_row(index_to_place, num_cols)
     col = get_column(index_to_place, num_cols)
     coordinate = (row, col)
@@ -73,7 +69,11 @@ def place_player(flat_matrix, num_cols, index_to_place):
     return (flat_matrix, coordinate)
 
 
-def place_player_in_field(flat_matrix, num_cols, side_field, available):
+def place_player_in_field(flat_matrix, num_cols, side_field):
+    """ Places a player a random selected index from side_field,
+    removes the selected index from side_field, and returns a
+    tuple of the modified flat_matrix, the modified side_field,
+    and the placement matrix coordinate. """
     # choose a random index from the side
     choice_index = random.randint(0, len(side_field) - 1)
     field_index = side_field[choice_index]
@@ -84,10 +84,13 @@ def place_player_in_field(flat_matrix, num_cols, side_field, available):
 
     del side_field[choice_index]
 
-    return (flat_matrix, side_field, field_index, coordinate)
+    return (flat_matrix, side_field, coordinate)
 
 
 def get_to_place_free_or_players(free_places, num_players):
+    """ Compares free_places and num_players. If num_players is less
+    than free_places, returns num_players, otherwise
+    returns free_places. """
     result = free_places
     if num_players < free_places:
         result = num_players
@@ -95,6 +98,7 @@ def get_to_place_free_or_players(free_places, num_players):
 
 
 def get_number_to_place(free, players_per_side):
+    """ Returns the number of players to place. """
     left_free = len(free[0])
     right_free = len(free[1])
     left_num = get_to_place_free_or_players(left_free, players_per_side)
@@ -121,41 +125,35 @@ def flatten(matrix):
 
 
 def seed_random():
-    # random.seed(random.randint(1, 1000))
+    """ Seeds random with random seed. """
     random.seed()
 
 
 def internal_placement(num_players, field):
+    """ This is the main internal process and returns a packaged result
+    of coordinates on left and right sides of field. """
     result = [[], []]
     field_length = get_length(field)
     seed_random()
-    # side_length = int(field_length / 2)
-
-    # remaining = int(num_players)
-
     players_per_side = num_players
     flat_matrix = flatten(field)
     
     if len(flat_matrix) > 0:
         free = free_spaces(field)
-        left_free = len(free[0])
-        right_free = len(free[1])
         number_to_place = get_number_to_place(free, players_per_side)
+        # place player in pairs
         while number_to_place > 0:
-            # place player in pairs
             # place left
-            left_result = place_player_in_field(flat_matrix, field_length, free[0], left_free)
+            left_result = place_player_in_field(flat_matrix, field_length, free[0])
             flat_matrix = left_result[0]
             free[0] = left_result[1]
-            left_field_index = left_result[2]
-            left_field_coordinate = left_result[3]
+            left_field_coordinate = left_result[2]
             result[0].append(left_field_coordinate)
             # place right
-            right_result = place_player_in_field(flat_matrix, field_length, free[1], right_free)
+            right_result = place_player_in_field(flat_matrix, field_length, free[1])
             flat_matrix = right_result[0]
             free[1] = right_result[1]
-            right_field_index = right_result[2]
-            right_field_coordinate = right_result[3]
+            right_field_coordinate = right_result[2]
             result[1].append(right_field_coordinate)
             seed_random()
             
@@ -165,9 +163,9 @@ def internal_placement(num_players, field):
 
 
 def validate(num_players, field):
+    """ Validates the input argments. """
     assert field is not None
     assert type(field) is tuple
-    # assert len(field) > 0
     assert type(field[0]) is tuple
     assert num_players is not None
     assert num_players > 0
@@ -175,6 +173,9 @@ def validate(num_players, field):
 
 # fill in placement
 def placement(num_players, field):
+    """ Returns a tuple of 2 tuples left and right that fills
+    a field matix (m x m) with a random placement of num_players
+    per side, left and right."""
     # default value
     result = ((), ()) 
     try:
@@ -182,7 +183,5 @@ def placement(num_players, field):
         result = internal_placement(num_players, field)
 
     except Exception as e:
-        # print(e)
-        # result = ((), ())
         result = None
     return result
