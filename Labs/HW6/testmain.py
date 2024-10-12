@@ -1,6 +1,6 @@
 import os
 import csv
-import main
+import edgegraph
 import time
 
 def run_test_file(inputs_filename, expected_filename):
@@ -15,7 +15,7 @@ def run_test_file(inputs_filename, expected_filename):
 
         start_time = time.time()
 
-        actual = main.placement(convert_to_int_list(input_list))
+        actual = edgegraph.dfs(convert_to_int_list(input_list))
 
         end_time = time.time()
 
@@ -94,27 +94,27 @@ def make_full_fields(length):
     return field
 
 def test_args():
-    result2 = main.placement(None, None)
+    result2 = edgegraph.dfs(None, None)
     assert result2 == None
     print("None passes.")
 
-    result5 = main.placement(45, ((),))
+    result5 = edgegraph.dfs(45, ((),))
     assert result5 == ((),())
     print("empty field passes.")
 
-    result5 = main.placement(-45, ((),))
+    result5 = edgegraph.dfs(-45, ((),))
     assert result5 == None
     print("negative num_players passes.")
 
-    result5 = main.placement(45, None)
+    result5 = edgegraph.dfs(45, None)
     assert result5 == None
     print("None field passes.")
 
-    result5 = main.placement(45, [[],[]])
+    result5 = edgegraph.dfs(45, [[],[]])
     assert result5 == None
     print("passing wrong type passes.")
 
-    result5 = main.placement(0,["A", "B", "C"])
+    result5 = edgegraph.dfs(0,["A", "B", "C"])
     assert result5 == None
     print("invalid list returns None.")
 
@@ -125,10 +125,10 @@ def print_values(item_list):
         print(item_list[index][VALUE_INDEX], end=", ")
     print("")
 
-print(main.placement(3, make_fields(6, 0)))
-print(main.placement(20, make_fields(20, 0)))
-print(main.placement(20, make_full_fields(20)))
-print(main.placement(45, (())))
+# print(edgegraph.dfs(3, make_fields(6, 0)))
+# print(edgegraph.dfs(20, make_fields(20, 0)))
+# print(edgegraph.dfs(20, make_full_fields(20)))
+# print(edgegraph.dfs(45, (())))
 
 test_args()
 
