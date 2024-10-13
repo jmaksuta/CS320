@@ -139,11 +139,17 @@ def test_graph_files():
         test_expected_and_actual(expected, actual)
 
 
+def list_to_vertex_tuple(list):
+    result = []
+    for elem in list:
+        result.append(VertexEL(elem))
+    return tuple(result)
+
 def test_expected_and_actual(expected, actual):
     try:
         is_passed = False
         for value in expected:
-            if tuple(value) == actual:
+            if list_to_vertex_tuple(value) == actual:
                 is_passed = True
                 break
         assert is_passed == True
