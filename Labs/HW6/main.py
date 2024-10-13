@@ -43,5 +43,3 @@ def dfs(graph, start):
         # result = None
         pass
     return result
-
-# picking up tomorrow!
