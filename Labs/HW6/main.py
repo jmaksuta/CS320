@@ -23,35 +23,41 @@ from edgegraph import VertexEL, EdgeEL, GraphEL, parse_graph_file
 EXPLORED = 1
 UNEXPLORED = 2
 
+def get_end_vertex(edge, start):
+    end_vertex = None
+    ends = edge.ends()
+    if ends[0] == start:
+        end_vertex = ends[1]
+    if ends[1] == start:
+        end_vertex = ends[0]
+    return end_vertex
+
 def is_unexplored(paths, edge):
     return (paths.get(str(edge)) != EXPLORED)
 
 
-def _internal_dfs(graph, start, paths=None):
-    result = (())
+def _internal_dfs(graph, start, paths=None, depth=0):
     discover_path = []
     if paths == None:
         paths = dict()
     paths[str(start)] = EXPLORED
     discover_path.append(start)
     for edge in graph.incident(start):
-        print(edge)
         if is_unexplored(paths, edge):
-            ends = edge.ends()
-            end_vertex = None
-            if ends[0] == start:
-                end_vertex = ends[1]
-            if ends[1] == start:
-                end_vertex = ends[0]
+            end_vertex = get_end_vertex(edge, start)
+
             if is_unexplored(paths, end_vertex):
                 paths[str(edge)] = "Discovery"
-                res, route, paths = _internal_dfs(graph, end_vertex, paths)
-                print("DEBUG: ", res, str(route), str(paths))
+                route, paths = _internal_dfs(graph, end_vertex, paths, depth + 1)
+                discover_path += route
             else:
                 paths[str(edge)] = "Back"
-    print("DEBUG: paths=" + str(paths))
-    print("DEBUG: discover_path=" + str(discover_path))
-    return result, discover_path, paths
+
+    if depth == 0:
+        result = tuple(discover_path)
+    else:
+        result = (discover_path, paths)
+    return result
 
 def validate(graph, start):
     """ Validates the input argments. """
@@ -68,10 +74,7 @@ def dfs(graph, start):
     try:
         validate(graph, start)
         result = _internal_dfs(graph, start)
-        print(graph)
-
+        
     except Exception as e:
-        # result = None
-        print(e)
-        pass
+        result = (())
     return result
