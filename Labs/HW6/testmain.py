@@ -1,6 +1,7 @@
 import os
 import csv
-import edgegraph
+import main
+from edgegraph import VertexEL, EdgeEL, GraphEL, parse_graph_file
 import time
 
 def run_test_file(inputs_filename, expected_filename):
@@ -15,7 +16,7 @@ def run_test_file(inputs_filename, expected_filename):
 
         start_time = time.time()
 
-        actual = edgegraph.dfs(convert_to_int_list(input_list))
+        # actual = main.dfs(convert_to_int_list(input_list))
 
         end_time = time.time()
 
@@ -94,41 +95,81 @@ def make_full_fields(length):
     return field
 
 def test_args():
-    result2 = edgegraph.dfs(None, None)
-    assert result2 == None
-    print("None passes.")
+    # If graph is None, return an empty tuple (())
+    # If start is None, return an empty tuple (())
+    # If start is not in graph, return an empty tuple(())
+    result = main.dfs(None, None)
+    assert result == (())
+    print("None graph and None start passes.")
 
-    result5 = edgegraph.dfs(45, ((),))
-    assert result5 == ((),())
-    print("empty field passes.")
+    result = main.dfs(None, VertexEL("Test"))
+    assert result == (())
+    print("None graph passes.")
 
-    result5 = edgegraph.dfs(-45, ((),))
-    assert result5 == None
-    print("negative num_players passes.")
+    graph1 = GraphEL()
+    result = main.dfs(graph1, None)
+    assert result == (())
+    print("None start passes.")
 
-    result5 = edgegraph.dfs(45, None)
-    assert result5 == None
-    print("None field passes.")
+    test_vertex_in_graph()
+    test_graph_files()
 
-    result5 = edgegraph.dfs(45, [[],[]])
-    assert result5 == None
-    print("passing wrong type passes.")
 
-    result5 = edgegraph.dfs(0,["A", "B", "C"])
-    assert result5 == None
-    print("invalid list returns None.")
+def test_vertex_in_graph():    
+    graph1 = GraphEL()
+    testV1 = VertexEL("Test")
+
+    result = main.dfs(graph1, testV1)
+    assert result == (())
+    print("Vertex in graph passes.")
+
+def test_graph_files():
+    dir_list = os.listdir("./Graph_Files")
+    print(dir_list)
+    
+
+    for file in dir_list:
+        expected = get_list_from_file("./Expected_Results/{file}".format(file=file))
+        
+        graph = parse_graph_file("./Graph_Files/{file}".format(file=file))
+        v1 = graph.vertices()[0]
+        actual = main.dfs(graph, v1)
+
+        print("Testing {file}.".format(file=file), end='')
+        test_expected_and_actual(expected, actual)
+
+
+def test_expected_and_actual(expected, actual):
+    try:
+        is_passed = False
+        for value in expected:
+            if tuple(value) == actual:
+                is_passed = True
+                break
+        assert is_passed == True
+        print(" Passed.")
+    except Exception as e:
+        print(" Failed.")
+    # graph1 = GraphEL()
+
+    # testV1 = VertexEL("Test")
+
+    # result = main.dfs(graph1, testV1)
+    # assert result == (())
+    # print("None start passes.")
+
 
 VALUE_INDEX = 2
 
-def print_values(item_list):
-    for index in range(0, len(item_list)):
-        print(item_list[index][VALUE_INDEX], end=", ")
-    print("")
+# def print_values(item_list):
+#     for index in range(0, len(item_list)):
+#         print(item_list[index][VALUE_INDEX], end=", ")
+#     print("")
 
-# print(edgegraph.dfs(3, make_fields(6, 0)))
-# print(edgegraph.dfs(20, make_fields(20, 0)))
-# print(edgegraph.dfs(20, make_full_fields(20)))
-# print(edgegraph.dfs(45, (())))
+# print(main.dfs(3, make_fields(6, 0)))
+# print(main.dfs(20, make_fields(20, 0)))
+# print(main.dfs(20, make_full_fields(20)))
+# print(main.dfs(45, (())))
 
 test_args()
 

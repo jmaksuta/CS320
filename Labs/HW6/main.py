@@ -20,8 +20,28 @@ from edgegraph import VertexEL, EdgeEL, GraphEL, parse_graph_file
 # If start is not in graph, return an empty tuple(())
 # Performance
 # Your implementation should run in time O(n+m), where n is the number of vertices and m is the number of edges.
-
-def dfs(graph, start):
+def _internal_dfs(graph, start):
     pass
+
+def validate(graph, start):
+    """ Validates the input argments. """
+    # You may assume that graph is not a forest.
+    # If graph is None, return an empty tuple (())
+    # If start is None, return an empty tuple (())
+    # If start is not in graph, return an empty tuple(())
+    assert graph is not None
+    assert start is not None
+    assert start in graph.vertices()
+    
+def dfs(graph, start):
+    result = (())
+    try:
+        validate(graph, start)
+        result = _internal_dfs(graph, start)
+
+    except Exception as e:
+        # result = None
+        pass
+    return result
 
 # picking up tomorrow!
