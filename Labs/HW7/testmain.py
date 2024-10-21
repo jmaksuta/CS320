@@ -16,7 +16,7 @@ def run_test_file(inputs_filename, expected_filename):
 
         start_time = time.time()
 
-        # actual = main.dfs(convert_to_int_list(input_list))
+        # actual = main.bellman_ford(convert_to_int_list(input_list))
 
         end_time = time.time()
 
@@ -98,30 +98,71 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
-    result = main.dfs(None, None)
-    assert result == (())
-    print("None graph and None start passes.")
-
-    result = main.dfs(None, VertexEL("Test"))
-    assert result == (())
-    print("None graph passes.")
-
-    graph1 = GraphEL()
-    result = main.dfs(graph1, None)
-    assert result == (())
-    print("None start passes.")
-
+    test_none_value_args()
     test_vertex_in_graph()
     test_graph_files()
 
 
-def test_vertex_in_graph():    
-    graph1 = GraphEL()
-    testV1 = VertexEL("Test")
+def test_none_value_args():
+    result = main.bellman_ford(None, None, None)
+    assert result == (None, None)
+    print("None graph, None start, and None end passes.")
 
-    result = main.dfs(graph1, testV1)
-    assert result == (())
-    print("Vertex in graph passes.")
+    result = main.bellman_ford(None, None, VertexEL("Test"))
+    assert result == (None, None)
+    print("None graph and None start passes.")
+
+    result = main.bellman_ford(None, VertexEL("Test"), None)
+    assert result == (None, None)
+    print("None graph and None end passes.")
+
+    test_graph = GraphEL()
+
+    result = main.bellman_ford(test_graph, None, None)
+    assert result == (None, None)
+    print("test_graph, None start, and None end passes.")
+
+    result = main.bellman_ford(test_graph, None, VertexEL("Test"))
+    assert result == (None, None)
+    print("test_graph and None start passes.")
+
+    result = main.bellman_ford(test_graph, VertexEL("Test"), None)
+    assert result == (None, None)
+    print("test_graph and None end passes.")
+
+
+def test_vertex_in_graph():    
+    empty_graph = GraphEL()
+    start = VertexEL("A")
+    end = VertexEL("Z")
+    result = main.bellman_ford(empty_graph, start, end)
+    assert result == (None, None)
+    print("start and end not in empty graph passes.")
+
+    start_a = VertexEL("A")
+    end_a = VertexEL("Z")
+    graph_a = GraphEL()
+    graph_a.add_vertex(start_a)
+    result = main.bellman_ford(graph_a, start_a, end_a)
+    assert result == (None, None)
+    print("end not in graph passes.")
+
+    start_b = VertexEL("A")
+    end_b = VertexEL("Z")
+    graph_b = GraphEL()
+    graph_b.add_vertex(end_b)
+    result = main.bellman_ford(graph_b, start_b, end_b)
+    assert result == (None, None)
+    print("start not in graph passes.")
+
+    start_c = VertexEL("A")
+    end_c = VertexEL("Z")
+    graph_c = GraphEL()
+    graph_c.add_vertex(start_c)
+    graph_c.add_vertex(end_c)
+    result = main.bellman_ford(graph_c, start_c, end_c)
+    assert result != (None, None)
+    print("start and end in graph passes.")
 
 def test_graph_files():
     dir_list = os.listdir("./Graph_Files")
@@ -133,7 +174,8 @@ def test_graph_files():
         
         graph = parse_graph_file("./Graph_Files/{file}".format(file=file))
         v1 = graph.vertices()[0]
-        actual = main.dfs(graph, v1)
+        v2 = graph.vertices()[len(graph.vertices()) - 1]
+        actual = main.bellman_ford(graph, v1, v2)
 
         print("Testing {file}.".format(file=file), end='')
         test_expected_and_actual(expected, actual)
@@ -160,7 +202,7 @@ def test_expected_and_actual(expected, actual):
 
     # testV1 = VertexEL("Test")
 
-    # result = main.dfs(graph1, testV1)
+    # result = main.bellman_ford(graph1, testV1)
     # assert result == (())
     # print("None start passes.")
 
@@ -172,10 +214,10 @@ VALUE_INDEX = 2
 #         print(item_list[index][VALUE_INDEX], end=", ")
 #     print("")
 
-# print(main.dfs(3, make_fields(6, 0)))
-# print(main.dfs(20, make_fields(20, 0)))
-# print(main.dfs(20, make_full_fields(20)))
-# print(main.dfs(45, (())))
+# print(main.bellman_ford(3, make_fields(6, 0)))
+# print(main.bellman_ford(20, make_fields(20, 0)))
+# print(main.bellman_ford(20, make_full_fields(20)))
+# print(main.bellman_ford(45, (())))
 
 test_args()
 
