@@ -36,7 +36,7 @@ def get_other_end(edge, vertex):
 def no_relaxation_possible(graph: GraphEL):
     return True
 
-def package_result(distances: dict):
+def package_result(distances: dict, paths: dict):
     result = []
     # return the label D[u] of each vertex u
     for key, value in distances.items():
@@ -46,6 +46,10 @@ def package_result(distances: dict):
 
 def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     """ A weighted directed graph with n vertices, and a vertex v of G. """
+    # TODO: Idea is that as we get the shortest distance that ends with end,
+    # we find the shortest paths at the same time as the distances, by
+    # concatenating the end vertex onto the path list onto the paths dict.
+
     # input
     distances = dict()
     paths = dict()
@@ -71,7 +75,7 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     if no_relaxation_possible(graph):
     # if there are no edges left with potential relaxation operations then
         # return the label D[u] of each vertex u
-        return package_result(distances)
+        return package_result(distances, paths)
     else:
     # else
         return None
