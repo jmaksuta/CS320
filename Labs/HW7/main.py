@@ -70,7 +70,9 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
             if distances[str(u)] + edge_weight < distances[str(z)]:
             # if D[u] + w((u, z)) < D[z] then
                 distances[str(z)] = distances[str(u)] + edge_weight
-                paths[str(u)] = paths[str(u)] + distances[str(z)]
+                paths[str(u)] = paths[str(u)] + [str(z)]
+            if z == end:
+                break
                 # D[z] = D[u] + w((u, z))
     if no_relaxation_possible(graph):
     # if there are no edges left with potential relaxation operations then
