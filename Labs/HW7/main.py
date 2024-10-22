@@ -50,9 +50,33 @@ def no_relaxation_possible(graph: GraphEL, distances):
 def package_result(graph: GraphEL, distances: dict):
     result = []
     # return the label D[u] of each vertex u
+    
+    items = []
     for key, value in distances.items():
-        result.append(VertexEL(key))
+        items.append(VertexEL(key))
+
+    v1 = items[0]
+    for vertex in items[1:]:
+        v2 = VertexEL(str(vertex))
+        edge = graph.get_edge_with_ends(v1, v2)
+        if edge is not None:
+            result.append(edge)
+        v1 = v2
+    
     return tuple(result)
+
+
+def _bellman_ford_relaxation(dir_edge, distances):
+    u = dir_edge.head()
+    z = dir_edge.tail()
+
+    edge_weight = weight(dir_edge)
+    if edge_weight <= 0:
+        raise Exception("negative weight encountered.")
+    
+    if distances[str(u)] + edge_weight < distances[str(z)]:
+        distances[str(z)] = distances[str(u)] + edge_weight
+    return distances
 
 
 def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
@@ -67,12 +91,7 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     
     for iteration in range(0, num_vertices - 1):
         for dir_edge in graph.edges():
-            u = dir_edge.head()
-            z = dir_edge.tail()
-
-            edge_weight = weight(dir_edge)
-            if distances[str(u)] + edge_weight < distances[str(z)]:
-                distances[str(z)] = distances[str(u)] + edge_weight
+            distances = _bellman_ford_relaxation(dir_edge, distances)
 
     if no_relaxation_possible(graph, distances):
         # if there are no edges left with potential relaxation operations then
@@ -80,11 +99,24 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
         return package_result(graph, distances)
     else:
         return None
+    
+
+def validate_start_and_end(start_to_end, end_to_start):
+    result = True
+    if start_to_end is None or end_to_start is None:
+        return result
+    for index in range(0, len(end_to_start)):
+        if start_to_end[index] == end_to_start[index]:
+            result = False
+            break
+    return result
 
 
 def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
     start_to_end = _bellman_ford(graph, start, end)
     end_to_start = _bellman_ford(graph, end, start)
+    if not validate_start_and_end(start_to_end, end_to_start):
+        end_to_start = None
     return (start_to_end, end_to_start)
 
 
@@ -104,6 +136,6 @@ def bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
         result = _internal(graph, start, end)
 
     except Exception as e:
-        print(e)
+        # print(e)
         result = None, None
     return result
