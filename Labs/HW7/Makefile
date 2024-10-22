@@ -6,3 +6,6 @@ zip:
 
 date:
 	echo $(CURRENT_DATE)
+
+run:
+	python testmain.py

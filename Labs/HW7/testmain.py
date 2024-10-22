@@ -86,6 +86,30 @@ def get_list_from_file(file_name):
 
     return result
 
+def get_expected_result_from_file(file_name):
+    result = [None,None]
+    with open(file_name, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        row_index = 0
+        for row in reader:
+            result[row_index] = tuple(row)
+            row_index += 1
+
+    return tuple(result)
+
+def get_row_from_csv_file(file_name, index):
+    result = None
+    with open(file_name, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        row_index = 0
+        for row in reader:
+            if row_index == index:
+                result = row
+                break
+            row_index += 1
+
+    return result
+
 def make_fields(length, num_obstacles):
     field = ((True,) * length,) * length
     return field
@@ -170,15 +194,21 @@ def test_graph_files():
     
 
     for file in dir_list:
-        expected = get_list_from_file("./Expected_Results/{file}".format(file=file))
-        
-        graph = parse_graph_file("./Graph_Files/{file}".format(file=file))
-        v1 = graph.vertices()[0]
-        v2 = graph.vertices()[len(graph.vertices()) - 1]
-        actual = main.bellman_ford(graph, v1, v2)
+        try:
+            expected = get_expected_result_from_file("./Expected_Results/{file}".format(file=file))
+            
+            graph_filename = "./Graph_Files/{file}".format(file=file)
+            graph = parse_graph_file(graph_filename)
+            args = get_row_from_csv_file(graph_filename, 0)
+            v1 = VertexEL(args[0])
+            v2 = VertexEL(args[1])
+            actual = main.bellman_ford(graph, v1, v2)
 
-        print("Testing {file}.".format(file=file), end='')
-        test_expected_and_actual(expected, actual)
+            print("Testing {file}.".format(file=file), end='')
+            test_expected_and_actual(expected, actual)
+        except Exception as e:
+            print(e)
+
 
 
 def list_to_vertex_tuple(list):
@@ -197,7 +227,7 @@ def test_expected_and_actual(expected, actual):
         assert is_passed == True
         print(" Passed.")
     except Exception as e:
-        print(" Failed.")
+        print(" Failed. expected={expected}, acutal={actual}".format(expected=expected, actual=actual))
     # graph1 = GraphEL()
 
     # testV1 = VertexEL("Test")

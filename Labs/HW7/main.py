@@ -7,20 +7,18 @@ Dr. Partridge
 """
 
 from edgegraph import *
-import math
+# import math
 import sys
 
 def weight(edge):
-    return 1
+    return edge.get_value()
 
 def relaxation(distances, edge):
-    u = edge.head
-    z = edge.tail
+    u = edge.head()
+    z = edge.tail()
     edge_weight = weight(edge)
     if distances[str(u)] + edge_weight < distances[str(z)]:
-    # if D[u] + w((u, z)) < D[z] then
         distances[str(z)] = distances[str(u)] + edge_weight
-        #D[z] = D[u] + w((u, z))
     return distances
 
 def get_other_end(edge, vertex):
@@ -33,55 +31,56 @@ def get_other_end(edge, vertex):
     return result
 
 
-def no_relaxation_possible(graph: GraphEL):
-    return True
+def no_relaxation_possible(graph: GraphEL, distances):
+    result = True
+    for dir_edge in graph.edges():
+        u = dir_edge.head()
+        z = dir_edge.tail()
+        # check if relaxation operation on (u,z) possible
+        edge_weight = weight(dir_edge)
+        if distances[str(u)] + edge_weight < distances[str(z)]:
+            result = False
+            break
+    return result
 
-def package_result(distances: dict, paths: dict):
+def package_result(distances: dict):
     result = []
     # return the label D[u] of each vertex u
     for key, value in distances.items():
         result.append(key)
-    return result
+    return tuple(result)
 
 
 def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     """ A weighted directed graph with n vertices, and a vertex v of G. """
-    # TODO: Idea is that as we get the shortest distance that ends with end,
-    # we find the shortest paths at the same time as the distances, by
-    # concatenating the end vertex onto the path list onto the paths dict.
-
-    # input
     distances = dict()
-    paths = dict()
     distances[str(start)] = 0
-    paths[str(start)] = [start]
-    # D[v] = 0
+    num_vertices = len(graph.vertices())
+
     for vertex in graph.vertices():
-        if vertex is not start:
+        if vertex != start:
             distances[str(vertex)] = sys.maxsize
-            paths[str(vertex)] = [vertex]
     
-    for u in graph.vertices():
-        for dir_edge in graph.out_incident(u):
-            z = dir_edge.tail
-            # Perform the relaxation operation on (u,z)
-            distances = relaxation(dir_edge)
+    for iteration in range(0, num_vertices - 1):
+        for dir_edge in graph.edges():
+            u = dir_edge.head()
+            z = dir_edge.tail()
+
             edge_weight = weight(dir_edge)
             if distances[str(u)] + edge_weight < distances[str(z)]:
-            # if D[u] + w((u, z)) < D[z] then
                 distances[str(z)] = distances[str(u)] + edge_weight
-                paths[str(u)] = paths[str(u)] + [str(z)]
-            if z == end:
-                break
-                # D[z] = D[u] + w((u, z))
-    if no_relaxation_possible(graph):
-    # if there are no edges left with potential relaxation operations then
+
+    if no_relaxation_possible(graph, distances):
+        # if there are no edges left with potential relaxation operations then
         # return the label D[u] of each vertex u
-        return package_result(distances, paths)
+        return package_result(distances)
     else:
-    # else
         return None
-        # return "Graph contatins a negative-weight cycle"
+
+def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
+    start_to_end = _bellman_ford(graph, start, end)
+    end_to_start = _bellman_ford(graph, end, start)
+    return (start_to_end, end_to_start)
 
 
 def validate(graph: GraphEL, start: VertexEL, end: VertexEL):
@@ -96,8 +95,9 @@ def bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     result = (),()
     try:
         validate(graph, start, end)
-        _bellman_ford(graph, start, end)
+        result = _internal(graph, start, end)
 
     except Exception as e:
+        print(e)
         result = None, None
     return result
