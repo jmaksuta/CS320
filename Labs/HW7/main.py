@@ -47,26 +47,54 @@ def no_relaxation_possible(graph: GraphEL, distances):
     return result
 
 
-def package_result(graph: GraphEL, distances: dict):
+def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) -> list:
     result = []
-    # return the label D[u] of each vertex u
-    
-    items = []
-    for key, value in distances.items():
-        items.append(VertexEL(key))
 
+    if items is None or len(items) == 0:
+        return result
+    
     v1 = items[0]
     for vertex in items[1:]:
         v2 = VertexEL(str(vertex))
-        edge = graph.get_edge_with_ends(v1, v2)
+        edge = None
+        # lookup edge
+        if lookup_graph is not None:
+            edge = lookup_graph.get_edge_with_ends(v1, v2)
+
+        # if edge is None:
+        #     edge_name = str(v1) + "-" + str(v2)
+        #     edge = EdgeEL(edge_name, v1, v2)
+
         if edge is not None:
             result.append(edge)
         v1 = v2
+    return result
+
+
+def package_result(graph: GraphEL, distances: dict, paths: dict, end):
+    """ Returns the result as a tuple of edges. """
+    result = []
+    # return the label D[u] of each vertex u
+
+    path_items = []
+    for key, value in paths.items():
+        # add end point
+        paths[key] = paths[key] + [key]
+
+    path_to_end = paths[str(end)]
+
+    vertices = []
+    for key in path_to_end:
+        vertices.append(VertexEL(key))
+
+    result = convert_list_vertices_to_edges(vertices, graph)
     
     return tuple(result)
 
 
-def _bellman_ford_relaxation(dir_edge, distances):
+def _bellman_ford_relaxation(dir_edge, distances, paths):
+    """ Performs the Bellman-Ford relaxation operation and
+    returns distances and paths. """
     u = dir_edge.head()
     z = dir_edge.tail()
 
@@ -76,27 +104,30 @@ def _bellman_ford_relaxation(dir_edge, distances):
     
     if distances[str(u)] + edge_weight < distances[str(z)]:
         distances[str(z)] = distances[str(u)] + edge_weight
-    return distances
+        paths[str(z)] = paths[str(z)] + [str(u)]
+    return distances, paths
 
 
 def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     """ A weighted directed graph with n vertices, and a vertex v of G. """
     distances = dict()
     distances[str(start)] = 0
+    paths = dict()
     num_vertices = len(graph.vertices())
 
     for vertex in graph.vertices():
         if vertex != start:
             distances[str(vertex)] = sys.maxsize
+            paths[str(vertex)] = [str(start)]
     
     for iteration in range(0, num_vertices - 1):
         for dir_edge in graph.edges():
-            distances = _bellman_ford_relaxation(dir_edge, distances)
+            distances, paths = _bellman_ford_relaxation(dir_edge, distances, paths)
 
     if no_relaxation_possible(graph, distances):
         # if there are no edges left with potential relaxation operations then
         # return the label D[u] of each vertex u
-        return package_result(graph, distances)
+        return package_result(graph, distances, paths, end)
     else:
         return None
     
@@ -136,6 +167,6 @@ def bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
         result = _internal(graph, start, end)
 
     except Exception as e:
-        # print(e)
+        print(e)
         result = None, None
     return result
