@@ -122,9 +122,10 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
+    
+    test_graph_files()
     test_none_value_args()
     test_vertex_in_graph()
-    test_graph_files()
 
 
 def test_none_value_args():
@@ -193,7 +194,7 @@ def test_graph_files():
     print(dir_list)
     
 
-    for file in dir_list:
+    for file in sorted(dir_list):
         try:
             expected = get_expected_result_from_file("./Expected_Results/{file}".format(file=file))
             
@@ -220,12 +221,15 @@ def list_to_vertex_tuple(list):
 def test_expected_and_actual(expected, actual):
     try:
         is_passed = False
-        for value in expected:
-            if list_to_vertex_tuple(value) == actual:
-                is_passed = True
-                break
-        assert is_passed == True
-        print(" Passed.")
+        if expected is (None, None) and actual is (None, None):
+            is_passed = True
+        else:
+            for value in expected:
+                if list_to_vertex_tuple(value) == actual:
+                    is_passed = True
+                    break
+            assert is_passed == True
+        print(" Passed." if is_passed else " Failed.")
     except Exception as e:
         print(" Failed. expected={expected}, acutal={actual}".format(expected=expected, actual=actual))
     # graph1 = GraphEL()
