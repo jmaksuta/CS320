@@ -10,8 +10,10 @@ from edgegraph import *
 # import math
 import sys
 
+
 def weight(edge):
     return edge.get_value()
+
 
 def relaxation(distances, edge):
     u = edge.head()
@@ -20,6 +22,7 @@ def relaxation(distances, edge):
     if distances[str(u)] + edge_weight < distances[str(z)]:
         distances[str(z)] = distances[str(u)] + edge_weight
     return distances
+
 
 def get_other_end(edge, vertex):
     result = None
@@ -43,11 +46,12 @@ def no_relaxation_possible(graph: GraphEL, distances):
             break
     return result
 
-def package_result(distances: dict):
+
+def package_result(graph: GraphEL, distances: dict):
     result = []
     # return the label D[u] of each vertex u
     for key, value in distances.items():
-        result.append(key)
+        result.append(VertexEL(key))
     return tuple(result)
 
 
@@ -73,9 +77,10 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     if no_relaxation_possible(graph, distances):
         # if there are no edges left with potential relaxation operations then
         # return the label D[u] of each vertex u
-        return package_result(distances)
+        return package_result(graph, distances)
     else:
         return None
+
 
 def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
     start_to_end = _bellman_ford(graph, start, end)
@@ -91,8 +96,9 @@ def validate(graph: GraphEL, start: VertexEL, end: VertexEL):
     assert graph.find_vertex(end) is not None
     return
 
+
 def bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
-    result = (),()
+    result = (), ()
     try:
         validate(graph, start, end)
         result = _internal(graph, start, end)

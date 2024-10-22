@@ -179,8 +179,8 @@ def test_vertex_in_graph():
     assert result == (None, None)
     print("start not in graph passes.")
 
-    start_c = VertexEL("A")
-    end_c = VertexEL("Z")
+    start_c = VertexEL("'A'")
+    end_c = VertexEL("'Z'")
     graph_c = GraphEL()
     graph_c.add_vertex(start_c)
     graph_c.add_vertex(end_c)
