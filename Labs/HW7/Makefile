@@ -1,5 +1,5 @@
 CURRENT_DATE=$(shell date +%Y-%m-%d-%H-%M)
-FILE_SUFFIX=John-Maksuta-CS320-801-HW7-10
+FILE_SUFFIX=John-Maksuta-CS320-801-HW7-25
 TARGET_DIR=./
 zip:
 	zip -r "$(CURRENT_DATE)-$(FILE_SUFFIX).zip" $(TARGET_DIR)
@@ -9,3 +9,6 @@ date:
 
 run:
 	python testmain.py
+
+style:
+	python pycodestyle.py main.py

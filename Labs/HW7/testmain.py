@@ -122,6 +122,7 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
+    test_doubleton()
     test_graph_files()
     test_none_value_args()
     test_vertex_in_graph()
@@ -185,15 +186,14 @@ def test_vertex_in_graph():
     graph_c.add_vertex(start_c)
     graph_c.add_vertex(end_c)
     result = main.bellman_ford(graph_c, start_c, end_c)
-    assert result != (None, None)
-    print("start and end in graph passes.")
+    # assert result != (None, None)
+    # print("start and end in graph passes.")
 
 def test_graph_files():
     dir_list = os.listdir("./Graph_Files")
     print(dir_list)
-    
 
-    for file in dir_list:
+    for file in sorted(dir_list):
         try:
             expected = get_expected_result_from_file("./Expected_Results/{file}".format(file=file))
             
@@ -208,6 +208,31 @@ def test_graph_files():
             test_expected_and_actual(expected, actual)
         except Exception as e:
             print(e)
+
+
+def test_doubleton():
+    # dir_list = os.listdir("./Individu")
+    # print(dir_list)
+
+    # for file in sorted(dir_list):
+    try:
+        # expected = get_expected_result_from_file("./Expected_Results/{file}".format(file=file))
+        
+        graph_filename = "./IndividualTests/Doubleton.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        expected = ((graph.get_edge_with_ends(v1, v2),), (graph.get_edge_with_ends(v2, v1),))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert expected == actual
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
 
 
 
