@@ -122,6 +122,7 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
+    test_simple_graph2()
     test_doubleton()
     test_graph_files()
     test_none_value_args()
@@ -226,6 +227,52 @@ def test_doubleton():
         actual = main.bellman_ford(graph, v1, v2)
 
         expected = ((graph.get_edge_with_ends(v1, v2),), (graph.get_edge_with_ends(v2, v1),))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert expected == actual
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
+
+
+def test_simple_graph():
+    try:
+        graph_filename = "./IndividualTests/SimpleGraph.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+        expected = ((AB,BD), (graph.get_edge_with_ends(v2, v1),))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert expected == actual
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
+
+def test_simple_graph2():
+    try:
+        graph_filename = "./IndividualTests/SimpleGraph2.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+        DE = graph.get_edge_with_ends(VertexEL("D"), VertexEL("E"))
+        EF = graph.get_edge_with_ends(VertexEL("E"), VertexEL("F"))
+        FC = graph.get_edge_with_ends(VertexEL("F"), VertexEL("C"))
+        CA = graph.get_edge_with_ends(VertexEL("C"), VertexEL("A"))
+
+        expected = ((AB, BD, DE, EF), (FC, CA))
 
         print("Testing {file}.".format(file=graph_filename), end='')
         assert expected == actual

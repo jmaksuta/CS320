@@ -115,6 +115,27 @@ def get_next_first_path_vertex(paths, current, exclude_edges):
     return next
 
 
+def package_result_start_to_end_chain(graph: GraphEL, distances: dict, 
+                                      paths: dict, start, end, exclude_edges):
+    """ Returns the result as a tuple of edges. """
+    result = None
+    # return the label D[u] of each vertex u
+    vertices = []
+    current = list(paths.keys())[0]
+    vertices.append(VertexEL(str(start)))
+    vertices.append(VertexEL(current))
+    while (current != str(end) and current is not None):
+        current = get_next_last_path_vertex(paths, current, exclude_edges)
+        # current = get_next_first_path_vertex(paths, current, exclude_edges)
+        if current is not None:
+            vertices.append(VertexEL(current))
+
+    if current is not None and current == str(end):
+        result = tuple(convert_list_vertices_to_edges(vertices, graph))
+    
+    return result
+
+
 def package_result_chain(graph: GraphEL, distances: dict, paths: dict, start, end, exclude_edges):
     """ Returns the result as a tuple of edges. """
     result = []
@@ -222,7 +243,7 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL,
     if no_relaxation_possible(graph, distances):
         # if there are no edges left with potential relaxation operations then
         # return the label D[u] of each vertex u
-        return package_result_chain(graph, distances, paths, start, end, exclude_edges)
+        return package_result_start_to_end_chain(graph, distances, paths, start, end, exclude_edges)
     else:
         return None
     
