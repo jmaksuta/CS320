@@ -65,7 +65,7 @@ def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) ->
     
     v1 = items[0]
     for vertex in items[1:]:
-        v2 = VertexEL(str(vertex))
+        v2 = vertex
         
         edge = lookup_edge(lookup_graph, v1, v2)
         if edge is None:
@@ -102,6 +102,20 @@ def package_result(graph: GraphEL, distances: dict, paths: dict, start, end):
     
     return tuple(result)
 
+def package_result(graph: GraphEL, distances: dict, paths: dict, start, end):
+    """ Returns the result as a tuple of edges. """
+    result = []
+    # return the label D[u] of each vertex u
+    path_to_end = [str(start)] + paths[str(end)] + [str(end)]
+
+    vertices = []
+    for key in path_to_end:
+        vertices.append(VertexEL(key))
+
+    result = convert_list_vertices_to_edges(vertices, graph)
+    
+    return tuple(result)
+
 
 def _bellman_ford_relaxation(dir_edge, distances, paths):
     """ Performs the Bellman-Ford relaxation operation and
@@ -120,21 +134,43 @@ def _bellman_ford_relaxation(dir_edge, distances, paths):
     return distances, paths
 
 
+# def _bellman_ford_relaxation(dir_edge, distances, paths, visited):
+#     """ Performs the Bellman-Ford relaxation operation and
+#     returns distances and paths. """
+#     u = dir_edge.head()
+#     z = dir_edge.tail()
+
+#     edge_weight = weight(dir_edge)
+#     if edge_weight <= 0:
+#         raise Exception("negative weight encountered.")
+    
+#     if distances[str(u)] + edge_weight < distances[str(z)]:
+#         distances[str(z)] = distances[str(u)] + edge_weight
+#         if str(u) not in visited[str(z)]:
+#             # paths[str(z)] = paths[str(z)] + [str(u)]
+#             paths[str(z)] = [str(u)]
+#             visited[str(z)][str(u)] = True
+
+#     return distances, paths, visited
+
+
 def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     """ A weighted directed graph with n vertices, and a vertex v of G. """
     distances = dict()
     distances[str(start)] = 0
     paths = dict()
+    visited = dict()
     num_vertices = len(graph.vertices())
 
     for vertex in graph.vertices():
         if vertex != start:
             distances[str(vertex)] = sys.maxsize
         paths[str(vertex)] = []
+        visited[str(vertex)] = dict()
     
     for iteration in range(0, num_vertices - 1):
         for dir_edge in graph.edges():
-            distances, paths = _bellman_ford_relaxation(dir_edge, distances, paths)
+            distances, paths, visited = _bellman_ford_relaxation(dir_edge, distances, paths, visited)
 
     if no_relaxation_possible(graph, distances):
         # if there are no edges left with potential relaxation operations then
@@ -161,6 +197,10 @@ def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
     start_to_end = _bellman_ford(graph, start, end)
     end_to_start = _bellman_ford(graph, end, start)
     if not validate_start_and_end(start_to_end, end_to_start):
+        end_to_start = None
+    if len(start_to_end) == 0:
+        start_to_end = None
+    if len(end_to_start) == 0:
         end_to_start = None
     return (start_to_end, end_to_start)
 
