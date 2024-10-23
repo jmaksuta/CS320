@@ -78,22 +78,6 @@ def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) ->
     return result
 
 
-# def package_result(graph: GraphEL, distances: dict, paths: dict, start, end):
-#     """ Returns the result as a tuple of edges. """
-#     result = []
-#     # return the label D[u] of each vertex u
-#     # path_to_end = [str(start)] + paths[str(end)] + [str(end)]
-#     # for key, value in paths:
-#     vertices = []
-#     for key, value in paths.items():
-#         if key != str(start):
-#             vertices.append(VertexEL(key))
-
-#     result = convert_list_vertices_to_edges(vertices, graph)
-    
-#     return tuple(result)
-
-
 def get_next_last_path_vertex(paths, current, exclude_edges):
     next = None
     if len(paths[current]) > 0:
@@ -126,7 +110,6 @@ def package_result_start_to_end_chain(graph: GraphEL, distances: dict,
     vertices.append(VertexEL(current))
     while (current != str(end) and current is not None):
         current = get_next_last_path_vertex(paths, current, exclude_edges)
-        # current = get_next_first_path_vertex(paths, current, exclude_edges)
         if current is not None:
             vertices.append(VertexEL(current))
 
@@ -145,7 +128,6 @@ def package_result_chain(graph: GraphEL, distances: dict, paths: dict, start, en
     vertices.insert(0, VertexEL(current))
     while (current != str(start) and current is not None):
         current = get_next_last_path_vertex(paths, current, exclude_edges)
-        # current = get_next_first_path_vertex(paths, current, exclude_edges)
         if current is not None:
             vertices.insert(0, VertexEL(current))
 
