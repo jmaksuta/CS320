@@ -47,6 +47,42 @@ def no_relaxation_possible(graph: GraphEL, distances):
     return result
 
 
+# def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) -> list:
+#     result = []
+
+#     if items is None or len(items) == 0:
+#         return result
+    
+#     v1 = items[0]
+#     for vertex in items[1:]:
+#         v2 = VertexEL(str(vertex))
+#         edge = None
+#         # lookup edge
+#         if lookup_graph is not None:
+#             edge = lookup_graph.get_edge_with_ends(v1, v2)
+#             if edge is None:
+#                 edge = lookup_graph.get_edge_with_ends(v2, v1)
+
+#         if edge is None:
+#             edge_name = str(v1) + "-" + str(v2)
+#             edge = EdgeEL(edge_name, v1, v2)
+
+#         if edge is not None:
+#             result.append(edge)
+#         v1 = v2
+#     return result
+
+def lookup_edge(lookup_graph: GraphEL, v1: VertexEL, v2: VertexEL) -> EdgeEL:
+    result = None
+    # lookup by one end then the other.
+    edge = lookup_graph.get_edge_with_ends(v1, v2)
+    if edge is None:
+        edge = lookup_graph.get_edge_with_ends(v2, v1)
+    if edge is not None:
+        result = edge
+    return result 
+
+
 def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) -> list:
     result = []
 
@@ -56,14 +92,11 @@ def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) ->
     v1 = items[0]
     for vertex in items[1:]:
         v2 = VertexEL(str(vertex))
-        edge = None
-        # lookup edge
-        if lookup_graph is not None:
-            edge = lookup_graph.get_edge_with_ends(v1, v2)
-
-        # if edge is None:
-        #     edge_name = str(v1) + "-" + str(v2)
-        #     edge = EdgeEL(edge_name, v1, v2)
+        
+        edge = lookup_edge(lookup_graph, v1, v2)
+        if edge is None:
+            edge_name = str(v1) + "-" + str(v2)
+            edge = EdgeEL(edge_name, v1, v2)
 
         if edge is not None:
             result.append(edge)
@@ -71,17 +104,11 @@ def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) ->
     return result
 
 
-def package_result(graph: GraphEL, distances: dict, paths: dict, end):
+def package_result(graph: GraphEL, distances: dict, paths: dict, start, end):
     """ Returns the result as a tuple of edges. """
     result = []
     # return the label D[u] of each vertex u
-
-    path_items = []
-    for key, value in paths.items():
-        # add end point
-        paths[key] = paths[key] + [key]
-
-    path_to_end = paths[str(end)]
+    path_to_end = [str(start)] + paths[str(end)] + [str(end)]
 
     vertices = []
     for key in path_to_end:
@@ -105,6 +132,7 @@ def _bellman_ford_relaxation(dir_edge, distances, paths):
     if distances[str(u)] + edge_weight < distances[str(z)]:
         distances[str(z)] = distances[str(u)] + edge_weight
         paths[str(z)] = paths[str(z)] + [str(u)]
+
     return distances, paths
 
 
@@ -118,7 +146,7 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     for vertex in graph.vertices():
         if vertex != start:
             distances[str(vertex)] = sys.maxsize
-            paths[str(vertex)] = [str(start)]
+        paths[str(vertex)] = []
     
     for iteration in range(0, num_vertices - 1):
         for dir_edge in graph.edges():
@@ -127,7 +155,7 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
     if no_relaxation_possible(graph, distances):
         # if there are no edges left with potential relaxation operations then
         # return the label D[u] of each vertex u
-        return package_result(graph, distances, paths, end)
+        return package_result(graph, distances, paths, start, end)
     else:
         return None
     
@@ -135,6 +163,8 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
 def validate_start_and_end(start_to_end, end_to_start):
     result = True
     if start_to_end is None or end_to_start is None:
+        return result
+    if len(start_to_end) != len(end_to_start):
         return result
     for index in range(0, len(end_to_start)):
         if start_to_end[index] == end_to_start[index]:
@@ -167,6 +197,5 @@ def bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
         result = _internal(graph, start, end)
 
     except Exception as e:
-        print(e)
         result = None, None
     return result

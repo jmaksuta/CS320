@@ -122,9 +122,9 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
+    test_graph_files()
     test_none_value_args()
     test_vertex_in_graph()
-    test_graph_files()
 
 
 def test_none_value_args():
