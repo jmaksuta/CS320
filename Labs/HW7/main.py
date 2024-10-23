@@ -7,7 +7,6 @@ Dr. Partridge
 """
 
 from edgegraph import *
-# import math
 import sys
 
 
@@ -47,31 +46,6 @@ def no_relaxation_possible(graph: GraphEL, distances):
     return result
 
 
-# def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) -> list:
-#     result = []
-
-#     if items is None or len(items) == 0:
-#         return result
-    
-#     v1 = items[0]
-#     for vertex in items[1:]:
-#         v2 = VertexEL(str(vertex))
-#         edge = None
-#         # lookup edge
-#         if lookup_graph is not None:
-#             edge = lookup_graph.get_edge_with_ends(v1, v2)
-#             if edge is None:
-#                 edge = lookup_graph.get_edge_with_ends(v2, v1)
-
-#         if edge is None:
-#             edge_name = str(v1) + "-" + str(v2)
-#             edge = EdgeEL(edge_name, v1, v2)
-
-#         if edge is not None:
-#             result.append(edge)
-#         v1 = v2
-#     return result
-
 def lookup_edge(lookup_graph: GraphEL, v1: VertexEL, v2: VertexEL) -> EdgeEL:
     result = None
     # lookup by one end then the other.
@@ -104,15 +78,25 @@ def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) ->
     return result
 
 
+def get_next_path_vertex(paths, current):
+    if len(paths[current]) > 0:
+        current = paths[current][0]
+    else:
+        current = None
+    return current
+
+
 def package_result(graph: GraphEL, distances: dict, paths: dict, start, end):
     """ Returns the result as a tuple of edges. """
     result = []
     # return the label D[u] of each vertex u
-    path_to_end = [str(start)] + paths[str(end)] + [str(end)]
-
     vertices = []
-    for key in path_to_end:
-        vertices.append(VertexEL(key))
+    current = str(end)
+    vertices.insert(0, VertexEL(current))
+    while (current != str(start) and current is not None):
+        current = get_next_path_vertex(paths, current)
+        if current is not None:
+            vertices.insert(0, VertexEL(current))
 
     result = convert_list_vertices_to_edges(vertices, graph)
     
@@ -197,5 +181,6 @@ def bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
         result = _internal(graph, start, end)
 
     except Exception as e:
+        print(e)
         result = None, None
     return result
