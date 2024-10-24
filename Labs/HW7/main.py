@@ -1,6 +1,6 @@
 """
-Lab 06 - HW6
-64.2 Depth-First Traversal
+Lab 07 - HW7
+65.2 Out and Back with Bellman-Ford
 Written By John Maksuta
 CS320-801 Fall 2024
 Dr. Partridge
