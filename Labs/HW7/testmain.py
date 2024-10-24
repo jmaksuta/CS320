@@ -122,6 +122,8 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
+    test_graph_3()
+    test_doubleton_2()
     test_simple_graph2()
     test_doubleton()
     test_graph_files()
@@ -212,13 +214,7 @@ def test_graph_files():
 
 
 def test_doubleton():
-    # dir_list = os.listdir("./Individu")
-    # print(dir_list)
-
-    # for file in sorted(dir_list):
     try:
-        # expected = get_expected_result_from_file("./Expected_Results/{file}".format(file=file))
-        
         graph_filename = "./IndividualTests/Doubleton.csv"
         graph = parse_graph_file(graph_filename)
         args = get_row_from_csv_file(graph_filename, 0)
@@ -234,6 +230,78 @@ def test_doubleton():
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+
+def test_doubleton_2():
+    try:
+        graph_filename = "./IndividualTests/Doubleton2.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BC = graph.get_edge_with_ends(VertexEL("B"), VertexEL("C"))
+        CD = graph.get_edge_with_ends(VertexEL("C"), VertexEL("D"))
+
+        DC = graph.get_edge_with_ends(VertexEL("D"), VertexEL("C"))
+        CB = graph.get_edge_with_ends(VertexEL("C"), VertexEL("B"))
+        BA = graph.get_edge_with_ends(VertexEL("B"), VertexEL("A"))
+
+        shortest_path = ((AB,BC,CD),(DC,CB,BA))
+
+        assert (actual == shortest_path)
+
+        
+        AE = graph.get_edge_with_ends(VertexEL("A"), VertexEL("E"))
+        BF = graph.get_edge_with_ends(VertexEL("B"), VertexEL("F"))
+        CG = graph.get_edge_with_ends(VertexEL("C"), VertexEL("G"))
+
+        expected = ((AB, BD, DE, EF), (FC, CA))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert expected == actual
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
+
+
+def test_graph_3():
+    try:
+        graph_filename = "./Graph_Files/graph003.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BC = graph.get_edge_with_ends(VertexEL("B"), VertexEL("C"))
+        CD = graph.get_edge_with_ends(VertexEL("C"), VertexEL("D"))
+
+        DC = graph.get_edge_with_ends(VertexEL("D"), VertexEL("C"))
+        CB = graph.get_edge_with_ends(VertexEL("C"), VertexEL("B"))
+        BA = graph.get_edge_with_ends(VertexEL("B"), VertexEL("A"))
+
+        shortest_path = ((AB,BC,CD),(DC,CB,BA))
+
+        assert (actual == shortest_path)
+
+        
+        AE = graph.get_edge_with_ends(VertexEL("A"), VertexEL("E"))
+        BF = graph.get_edge_with_ends(VertexEL("B"), VertexEL("F"))
+        CG = graph.get_edge_with_ends(VertexEL("C"), VertexEL("G"))
+
+        expected = ((AB, BD, DE, EF), (FC, CA))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert expected == actual
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
+
 
 
 def test_simple_graph():

@@ -80,7 +80,7 @@ def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) ->
 
 def get_next_last_path_vertex(paths, current, exclude_edges):
     next = None
-    if len(paths[current]) > 0:
+    if current in paths and len(paths[current]) > 0:
         for index in range(len(paths[current]) - 1, -1, -1):
             vertex = paths[current][index]
             if not is_excluded(exclude_edges, VertexEL(current), VertexEL(vertex)):
@@ -265,9 +265,9 @@ def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
     end_to_start = _bellman_ford(graph, end, start, exclude_edges)
     if not validate_start_and_end(start_to_end, end_to_start):
         end_to_start = None
-    if len(start_to_end) == 0:
+    if start_to_end is not None and len(start_to_end) == 0:
         start_to_end = None
-    if len(end_to_start) == 0:
+    if end_to_start is not None and len(end_to_start) == 0:
         end_to_start = None
     return (start_to_end, end_to_start)
 
