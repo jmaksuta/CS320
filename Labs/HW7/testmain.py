@@ -212,6 +212,7 @@ def test_graph_files():
             test_expected_and_actual(expected, actual)
         except Exception as e:
             print(e)
+            print(" Failed.")
 
 
 def test_doubleton():
@@ -225,12 +226,16 @@ def test_doubleton():
 
         expected = ((graph.get_edge_with_ends(v1, v2),), (graph.get_edge_with_ends(v2, v1),))
 
+        print("Testing {file}.".format(file=graph_filename))
+        print(f"expected={expected},\nactual={actual}")
         print("Testing {file}.".format(file=graph_filename), end='')
         assert expected == actual
         print(" Passed.")
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
+
 
 def test_doubleton_2():
     try:
@@ -258,15 +263,24 @@ def test_doubleton_2():
         BF = graph.get_edge_with_ends(VertexEL("B"), VertexEL("F"))
         CG = graph.get_edge_with_ends(VertexEL("C"), VertexEL("G"))
 
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+        DE = graph.get_edge_with_ends(VertexEL("D"), VertexEL("E"))
+        EF = graph.get_edge_with_ends(VertexEL("E"), VertexEL("F"))
+        FC = graph.get_edge_with_ends(VertexEL("F"), VertexEL("C"))
+        CA = graph.get_edge_with_ends(VertexEL("C"), VertexEL("A"))
         expected = ((AB, BD, DE, EF), (FC, CA))
 
+        print("Testing {file}.".format(file=graph_filename))
+        print(f"expected={expected},\nactual={actual}")
         print("Testing {file}.".format(file=graph_filename), end='')
         assert expected == actual
         print(" Passed.")
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
-
+        print(" Failed.")
+        
 
 def test_graph_3():
     try:
@@ -294,14 +308,23 @@ def test_graph_3():
         BF = graph.get_edge_with_ends(VertexEL("B"), VertexEL("F"))
         CG = graph.get_edge_with_ends(VertexEL("C"), VertexEL("G"))
 
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+        DE = graph.get_edge_with_ends(VertexEL("D"), VertexEL("E"))
+        EF = graph.get_edge_with_ends(VertexEL("E"), VertexEL("F"))
+        FC = graph.get_edge_with_ends(VertexEL("F"), VertexEL("C"))
+        CA = graph.get_edge_with_ends(VertexEL("C"), VertexEL("A"))
+
         expected = ((AB, BD, DE, EF), (FC, CA))
 
+        print("Testing {file}.".format(file=graph_filename))
+        print(f"expected={expected},\nactual={actual}")
         print("Testing {file}.".format(file=graph_filename), end='')
         assert expected == actual
         print(" Passed.")
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
 
 
 def test_multiway_1():
@@ -321,12 +344,15 @@ def test_multiway_1():
 
         expected = ((AB, DE),(DE, EB, BA))
 
+        print("Testing {file}.".format(file=graph_filename))
+        print(f"expected={expected},\nactual={actual}")
         print("Testing {file}.".format(file=graph_filename), end='')
         assert compare_results(expected, actual)
         print(" Passed.")
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
 
 def compare_results(expected, actual):
     # compare index 0
@@ -366,12 +392,15 @@ def test_simple_graph():
         BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
         expected = ((AB,BD), (graph.get_edge_with_ends(v2, v1),))
 
+        print("Testing {file}.".format(file=graph_filename))
+        print(f"expected={expected},\nactual={actual}")
         print("Testing {file}.".format(file=graph_filename), end='')
         assert expected == actual
         print(" Passed.")
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
 
 def test_simple_graph2():
     try:
@@ -391,13 +420,15 @@ def test_simple_graph2():
 
         expected = ((AB, BD, DE, EF), (FC, CA))
 
+        print("Testing {file}.".format(file=graph_filename))
+        print(f"expected={expected},\nactual={actual}")
         print("Testing {file}.".format(file=graph_filename), end='')
         assert expected == actual
         print(" Passed.")
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
-
+        print(" Failed.")
 
 
 def list_to_vertex_tuple(list):
