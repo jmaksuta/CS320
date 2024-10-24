@@ -122,6 +122,7 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
+    test_multiway_1()
     test_graph_3()
     test_doubleton_2()
     test_simple_graph2()
@@ -303,6 +304,54 @@ def test_graph_3():
         print(e)
 
 
+def test_multiway_1():
+    try:
+        graph_filename = "./IndividualTests/Multiway1.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+        DE = graph.get_edge_with_ends(VertexEL("D"), VertexEL("E"))
+        EB = graph.get_edge_with_ends(VertexEL("E"), VertexEL("B"))
+        BA = graph.get_edge_with_ends(VertexEL("B"), VertexEL("A"))
+
+        expected = ((AB, DE),(DE, EB, BA))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert compare_results(expected, actual)
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
+
+def compare_results(expected, actual):
+    # compare index 0
+    index0_passed = test_index(expected, actual, 0)
+    # compare index 1
+    index1_passed = test_index(expected, actual, 1)
+    return index0_passed and index1_passed
+
+def test_index(expected, actual, ind):
+    try:
+        index1_passsed = False
+        if expected[ind] is None:
+            if actual[ind] is None:
+                index1_passsed = True
+            else:
+                index1_passsed = False
+        else:
+            for index in range(0, len(expected[ind])):
+                if str(expected[ind][index]) != str(actual[ind][index]):
+                    index1_passsed = False
+                    break  
+    except Exception as e:
+        index1_passsed = False
+
+    return index1_passsed
 
 def test_simple_graph():
     try:
