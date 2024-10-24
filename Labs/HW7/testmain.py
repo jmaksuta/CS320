@@ -122,6 +122,8 @@ def test_args():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
     # If start is not in graph, return an empty tuple(())
+    test_cyclic_1()
+    test_cyclic_2()
     test_multiway_1()
     test_graph_3()
     test_doubleton_2()
@@ -212,6 +214,7 @@ def test_graph_files():
             test_expected_and_actual(expected, actual)
         except Exception as e:
             print(e)
+            print(" Failed.")
 
 
 def test_doubleton():
@@ -231,6 +234,7 @@ def test_doubleton():
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
 
 def test_doubleton_2():
     try:
@@ -257,6 +261,12 @@ def test_doubleton_2():
         AE = graph.get_edge_with_ends(VertexEL("A"), VertexEL("E"))
         BF = graph.get_edge_with_ends(VertexEL("B"), VertexEL("F"))
         CG = graph.get_edge_with_ends(VertexEL("C"), VertexEL("G"))
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+
+        DE = graph.get_edge_with_ends(VertexEL("D"), VertexEL("E"))
+        EF = graph.get_edge_with_ends(VertexEL("E"), VertexEL("F"))
+        FC = graph.get_edge_with_ends(VertexEL("F"), VertexEL("C"))
+        CA = graph.get_edge_with_ends(VertexEL("C"), VertexEL("A"))
 
         expected = ((AB, BD, DE, EF), (FC, CA))
 
@@ -266,6 +276,7 @@ def test_doubleton_2():
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
 
 
 def test_graph_3():
@@ -302,6 +313,7 @@ def test_graph_3():
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
 
 
 def test_multiway_1():
@@ -327,6 +339,60 @@ def test_multiway_1():
         # test_expected_and_actual(expected, actual)
     except Exception as e:
         print(e)
+        print(" Failed.")
+
+
+def test_cyclic_1():
+    try:
+        graph_filename = "./IndividualTests/Cyclic1.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+
+        DE = graph.get_edge_with_ends(VertexEL("D"), VertexEL("E"))
+        EA = graph.get_edge_with_ends(VertexEL("E"), VertexEL("A"))
+
+        expected = ((AB, BD),(DE, EA))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert compare_results(expected, actual)
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
+        print(" Failed.")
+
+
+def test_cyclic_2():
+    try:
+        graph_filename = "./IndividualTests/Cyclic2.csv"
+        graph = parse_graph_file(graph_filename)
+        args = get_row_from_csv_file(graph_filename, 0)
+        v1 = VertexEL(args[0])
+        v2 = VertexEL(args[1])
+        actual = main.bellman_ford(graph, v1, v2)
+
+        AB = graph.get_edge_with_ends(VertexEL("A"), VertexEL("B"))
+        BD = graph.get_edge_with_ends(VertexEL("B"), VertexEL("D"))
+
+        DE = graph.get_edge_with_ends(VertexEL("D"), VertexEL("E"))
+        EA = graph.get_edge_with_ends(VertexEL("E"), VertexEL("A"))
+
+        expected = ((AB, BD),(DE, EA))
+
+        print("Testing {file}.".format(file=graph_filename), end='')
+        assert compare_results(expected, actual)
+        print(" Passed.")
+        # test_expected_and_actual(expected, actual)
+    except Exception as e:
+        print(e)
+        print(" Failed.")
+
 
 def compare_results(expected, actual):
     # compare index 0

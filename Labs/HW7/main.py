@@ -36,8 +36,10 @@ def get_other_end(edge, vertex):
 def no_relaxation_possible(graph: GraphEL, distances):
     result = True
     for dir_edge in graph.edges():
-        u = dir_edge.head()
-        z = dir_edge.tail()
+        # u = dir_edge.head()
+        # z = dir_edge.tail()
+        u = dir_edge.tail()
+        z = dir_edge.head()
         # check if relaxation operation on (u,z) possible
         edge_weight = weight(dir_edge)
         if distances[str(u)] + edge_weight < distances[str(z)]:
@@ -99,21 +101,47 @@ def get_next_first_path_vertex(paths, current, exclude_edges):
     return next
 
 
+def populate_start_path(graph: GraphEL, paths: dict, start: VertexEL) -> dict:
+    if str(start) not in paths or len(paths[str(start)]) == 0:
+        distance = sys.maxsize
+        for edge in graph.out_incident(start):
+            edge_weight = weight(edge)
+            vertex = None
+            vertices = edge.ends()
+            if vertices[0] != start:
+                vertex = vertices[0]
+            elif vertices[1] != start:
+                vertex = vertices[1]
+            if edge_weight < distance and vertex is not None:
+                paths[str(start)] = paths[str(start)] + [str(vertex)]
+                distance = edge_weight
+    return paths
+
+
 def package_result_start_to_end_chain(graph: GraphEL, distances: dict, 
                                       paths: dict, start, end, exclude_edges):
     """ Returns the result as a tuple of edges. """
     result = None
     # return the label D[u] of each vertex u
     vertices = []
-    current = list(paths.keys())[0]
-    vertices.append(VertexEL(str(start)))
-    vertices.append(VertexEL(current))
-    while (current != str(end) and current is not None):
+    paths = populate_start_path(graph, paths, start)
+    
+    # current = paths[str(start)][len(paths[str(start)]) - 1]
+    current = paths[str(end)][len(paths[str(end)]) - 1]
+    # current = list(paths.keys())[0]
+    # current = paths[str(end)][len(paths[str(end)]) - 1]
+    # vertices.append(VertexEL(str(start)))
+    vertices.insert(0, VertexEL(str(end)))
+    # vertices.append(VertexEL(current))
+    vertices.insert(0, VertexEL(current))
+    # while (current != str(end) and current is not None):
+    while (current != str(start) and current is not None):
         current = get_next_last_path_vertex(paths, current, exclude_edges)
         if current is not None:
-            vertices.append(VertexEL(current))
+            # vertices.append(VertexEL(current))
+            vertices.insert(0, VertexEL(current))
 
-    if current is not None and current == str(end):
+    if current is not None and current == str(start):
         result = tuple(convert_list_vertices_to_edges(vertices, graph))
     
     return result
@@ -191,8 +219,11 @@ def package_result(graph: GraphEL, distances: dict, paths: dict, start, end, exc
 def _bellman_ford_relaxation(dir_edge, distances, paths):
     """ Performs the Bellman-Ford relaxation operation and
     returns distances and paths. """
-    u = dir_edge.head()
-    z = dir_edge.tail()
+    # u = dir_edge.head()
+    # z = dir_edge.tail()
+
+    u = dir_edge.tail()
+    z = dir_edge.head()
 
     edge_weight = weight(dir_edge)
     if edge_weight <= 0:
@@ -201,6 +232,10 @@ def _bellman_ford_relaxation(dir_edge, distances, paths):
     if distances[str(u)] + edge_weight < distances[str(z)]:
         distances[str(z)] = distances[str(u)] + edge_weight
         paths[str(z)] = paths[str(z)] + [str(u)]
+
+    # if distances[str(z)] + edge_weight < distances[str(u)]:
+    #     distances[str(u)] = distances[str(z)] + edge_weight
+    #     paths[str(u)] = paths[str(u)] + [str(z)]
 
     return distances, paths
 
@@ -216,7 +251,8 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL,
     for vertex in graph.vertices():
         if vertex != start:
             distances[str(vertex)] = sys.maxsize
-            paths[str(vertex)] = []
+            # paths[str(vertex)] = []
+        paths[str(vertex)] = []
     
     for iteration in range(0, num_vertices - 1):
         for dir_edge in graph.edges():
