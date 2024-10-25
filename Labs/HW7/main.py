@@ -180,19 +180,21 @@ def is_excluded(exclude_edges, v1, v2):
     result = False
     if exclude_edges is None:
         return False
-    for edge in exclude_edges[str(v1)]:
-        ends = edge.ends()
-
-        if (ends[0] == v1 and ends[1] == v2) or (ends[0] == v2 and ends[1] == v1):
-            result = True
-            break
-    if result is False:
+    if str(v1) in exclude_edges:
         for edge in exclude_edges[str(v1)]:
             ends = edge.ends()
 
             if (ends[0] == v1 and ends[1] == v2) or (ends[0] == v2 and ends[1] == v1):
                 result = True
                 break
+    if result is False:
+        if str(v2) in exclude_edges:
+            for edge in exclude_edges[str(v2)]:
+                ends = edge.ends()
+
+                if (ends[0] == v1 and ends[1] == v2) or (ends[0] == v2 and ends[1] == v1):
+                    result = True
+                    break
     return result
 
 
@@ -284,7 +286,7 @@ def build_exclude_dict(path):
 def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
     start_to_end = _bellman_ford(graph, start, end)
     exclude_edges = build_exclude_dict(start_to_end)
-    exclude_edges = None
+    # exclude_edges = None
     end_to_start = _bellman_ford(graph, end, start, exclude_edges)
     if not validate_start_and_end(start_to_end, end_to_start):
         end_to_start = None
