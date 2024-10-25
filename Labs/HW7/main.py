@@ -118,6 +118,7 @@ def package_result_start_to_end_chain(graph: GraphEL, distances: dict,
     
     return result
 
+
 def package_result_end_to_start_chain(graph: GraphEL, distances: dict, 
                                       paths: dict, start, end, exclude_edges):
     """ Returns the result as a tuple of edges. """
@@ -126,7 +127,7 @@ def package_result_end_to_start_chain(graph: GraphEL, distances: dict,
     vertices = []
     current = None
     if str(end) in paths and len(paths[str(end)]) > 0:
-        current = paths[str(end)][0]
+        current = paths[str(end)][len(paths[str(end)]) - 1]
     if current is not None:
         vertices.append(VertexEL(str(end)))
         vertices.insert(0, VertexEL(current))
@@ -282,7 +283,7 @@ def build_exclude_dict(path):
 
 def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
     start_to_end = _bellman_ford(graph, start, end)
-    # exclude_edges = build_exclude_dict(start_to_end)
+    exclude_edges = build_exclude_dict(start_to_end)
     exclude_edges = None
     end_to_start = _bellman_ford(graph, end, start, exclude_edges)
     if not validate_start_and_end(start_to_end, end_to_start):
