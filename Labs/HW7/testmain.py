@@ -86,13 +86,29 @@ def get_list_from_file(file_name):
 
     return result
 
-def get_expected_result_from_file(file_name):
+def get_expected_result_from_file(file_name, graph: GraphEL):
     result = [None,None]
     with open(file_name, 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         row_index = 0
         for row in reader:
-            result[row_index] = tuple(row)
+            result[row_index] = []
+            vertices = tuple(row)
+            if len(vertices) > 0:
+                index = 0
+                current = vertices[index]
+                while current is not None:
+                    index += 1
+                    if index < len(vertices):
+                        vertex = vertices[index]
+                        edge = graph.get_edge_with_ends(VertexEL(current), VertexEL(vertex))
+                        if edge is not None:
+                            result[row_index].append(edge)
+                        current = vertex
+                    else:
+                        current = None
+            # result[row_index] = tuple(row)
+            result[row_index] = tuple(result[row_index])
             row_index += 1
 
     return tuple(result)
@@ -199,10 +215,10 @@ def test_graph_files():
 
     for file in sorted(dir_list):
         try:
-            expected = get_expected_result_from_file("./Expected_Results/{file}".format(file=file))
-            
             graph_filename = "./Graph_Files/{file}".format(file=file)
             graph = parse_graph_file(graph_filename)
+            expected = get_expected_result_from_file("./Expected_Results/{file}".format(file=file), graph)
+            
             args = get_row_from_csv_file(graph_filename, 0)
             v1 = VertexEL(args[0])
             v2 = VertexEL(args[1])
