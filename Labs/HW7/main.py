@@ -11,29 +11,13 @@ import sys
 
 
 def weight(edge):
+    """ Returns the weight of an edge. """
     return edge.get_value()
 
 
-def relaxation(distances, edge):
-    u = edge.tail()
-    z = edge.head()
-    edge_weight = weight(edge)
-    if distances[str(u)] + edge_weight < distances[str(z)]:
-        distances[str(z)] = distances[str(u)] + edge_weight
-    return distances
-
-
-def get_other_end(edge, vertex):
-    result = None
-    pair = edge.ends()
-    if pair[0] == vertex:
-        result = pair[1]
-    elif pair[1] == vertex:
-        result = pair[0]
-    return result
-
-
 def no_relaxation_possible(graph: GraphEL, distances):
+    """ Returns true if no relaxation is possible. i.e.
+    there is no directed edge whose distance can be improved. """
     result = True
     for dir_edge in graph.edges():
         u = dir_edge.tail()
@@ -47,6 +31,7 @@ def no_relaxation_possible(graph: GraphEL, distances):
 
 
 def lookup_edge(lookup_graph: GraphEL, v1: VertexEL, v2: VertexEL) -> EdgeEL:
+    """ Returns an edge from the graph if it exists, or None if none exists. """
     result = None
     # lookup by one end then the other.
     edge = lookup_graph.get_edge_with_ends(v1, v2)
@@ -58,8 +43,8 @@ def lookup_edge(lookup_graph: GraphEL, v1: VertexEL, v2: VertexEL) -> EdgeEL:
 
 
 def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) -> list:
+    """ Returns a list of edges looked up in the graph from a list of vertices. """
     result = []
-
     if items is None or len(items) == 0:
         return result
     
@@ -78,45 +63,27 @@ def convert_list_vertices_to_edges(items: list, lookup_graph: GraphEL = None) ->
     return result
 
 
+def get_next_vertex_no_excluded(paths, current, exclude_edges):
+    """ Checks each element in the paths[current] entry's list
+    starting with last index to first index, if the edge from
+    current to vertex is excluded and returns the non-excluded
+    element or None if no non-excluded list item exists. """
+    next = None
+    for index in range(len(paths[current]) - 1, -1, -1):
+        vertex = paths[current][index]
+        if not is_excluded(exclude_edges, VertexEL(current), VertexEL(vertex)):
+            next = vertex
+            break
+    return next
+
+
 def get_next_last_path_vertex(paths, current, exclude_edges):
+    """ Returns the next non-excluded vertex from the
+    paths[current] entry's ordered list of vertices. """
     next = None
     if current in paths and len(paths[current]) > 0:
-        for index in range(len(paths[current]) - 1, -1, -1):
-            vertex = paths[current][index]
-            if not is_excluded(exclude_edges, VertexEL(current), VertexEL(vertex)):
-                next = vertex
-                break
+        next = get_next_vertex_no_excluded(paths, current, exclude_edges)
     return next
-
-
-def get_next_first_path_vertex(paths, current, exclude_edges):
-    next = None
-    if len(paths[current]) > 0:
-        for vertex in paths[current]:
-            if not is_excluded(exclude_edges, VertexEL(current), VertexEL(vertex)):
-                next = vertex
-                break
-    return next
-
-
-def package_result_start_to_end_chain(graph: GraphEL, distances: dict, 
-                                      paths: dict, start, end, exclude_edges):
-    """ Returns the result as a tuple of edges. """
-    result = None
-    # return the label D[u] of each vertex u
-    vertices = []
-    current = list(paths.keys())[0]
-    vertices.append(VertexEL(str(start)))
-    vertices.append(VertexEL(current))
-    while (current != str(end) and current is not None):
-        current = get_next_last_path_vertex(paths, current, exclude_edges)
-        if current is not None:
-            vertices.append(VertexEL(current))
-
-    if current is not None and current == str(end):
-        result = tuple(convert_list_vertices_to_edges(vertices, graph))
-    
-    return result
 
 
 def package_result_end_to_start_chain(graph: GraphEL, distances: dict, 
@@ -142,59 +109,35 @@ def package_result_end_to_start_chain(graph: GraphEL, distances: dict,
     return result
 
 
-def package_result_chain(graph: GraphEL, distances: dict, paths: dict, start, end, exclude_edges):
-    """ Returns the result as a tuple of edges. """
-    result = []
-    # return the label D[u] of each vertex u
-    vertices = []
-    current = str(end)
-    vertices.insert(0, VertexEL(current))
-    while (current != str(start) and current is not None):
-        current = get_next_last_path_vertex(paths, current, exclude_edges)
-        if current is not None:
-            vertices.insert(0, VertexEL(current))
-
-    result = convert_list_vertices_to_edges(vertices, graph)
-    
-    return tuple(result)
+def is_end_a_match(edge, v1, v2):
+    """ Returns True if v1 and v2 are both ends of edge. """
+    ends = edge.ends()
+    is_start_end = (ends[0] == v1 and ends[1] == v2)
+    is_end_start = (ends[0] == v2 and ends[1] == v1)
+    return is_start_end or is_end_start
 
 
-def package_result_chain2(graph: GraphEL, distances: dict, paths: dict, start, end, exclude_edges):
-    """ Returns the result as a tuple of edges. """
-    result = []
-    # return the label D[u] of each vertex u
-    vertices = []
-    current = str(end)
-    vertices.insert(0, VertexEL(current))
-    while (current != str(start) and current is not None):
-        current = get_next_first_path_vertex(paths, current, exclude_edges)
-        if current is not None:
-            vertices.insert(0, VertexEL(current))
-
-    result = convert_list_vertices_to_edges(vertices, graph)
-    
+def is_vertex_edges_excluded(exclude_edges, the_vertex, other_vertex):
+    """ Returns true if any exclude_edges[the_vertex] edge entries
+    match the_vertex and other_vertex."""
+    result = False
+    if str(the_vertex) in exclude_edges:
+        for edge in exclude_edges[str(the_vertex)]:
+            if is_end_a_match(edge, the_vertex, other_vertex):
+                result = True
+                break
     return result
 
 
 def is_excluded(exclude_edges, v1, v2):
+    """ Returns True if the exclude_edges entry for
+    either vertex contains an edge of both vertices. """
     result = False
     if exclude_edges is None:
         return False
-    if str(v1) in exclude_edges:
-        for edge in exclude_edges[str(v1)]:
-            ends = edge.ends()
-
-            if (ends[0] == v1 and ends[1] == v2) or (ends[0] == v2 and ends[1] == v1):
-                result = True
-                break
+    result = is_vertex_edges_excluded(exclude_edges, v1, v2)
     if result is False:
-        if str(v2) in exclude_edges:
-            for edge in exclude_edges[str(v2)]:
-                ends = edge.ends()
-
-                if (ends[0] == v1 and ends[1] == v2) or (ends[0] == v2 and ends[1] == v1):
-                    result = True
-                    break
+        result = is_vertex_edges_excluded(exclude_edges, v2, v1)
     return result
 
 
@@ -203,13 +146,10 @@ def package_result(graph: GraphEL, distances: dict, paths: dict, start, end, exc
     result = []
     # return the label D[u] of each vertex u
     path_to_end = [str(start)] + paths[str(end)] + [str(end)]
-    
     vertices = []
     for key in path_to_end:
         vertices.append(VertexEL(key))
-
     result = convert_list_vertices_to_edges(vertices, graph)
-    
     return tuple(result)
 
 
@@ -232,7 +172,8 @@ def _bellman_ford_relaxation(dir_edge, distances, paths):
 
 def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL,
                   exclude_edges: dict = None) -> list:
-    """ A weighted directed graph with n vertices, and a vertex v of G. """
+    """ Performs the bellman-ford algorithm given a weighted
+    directed graph with n vertices, and a vertex v of G. """
     distances = dict()
     distances[str(start)] = 0
     paths = dict()
@@ -256,6 +197,8 @@ def _bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL,
     
 
 def validate_start_and_end(start_to_end, end_to_start):
+    """ Validates the start and end entries. Returns False
+    if they have the same exact entries. """
     result = True
     if start_to_end is None or end_to_start is None:
         return result
@@ -269,6 +212,8 @@ def validate_start_and_end(start_to_end, end_to_start):
 
 
 def build_exclude_dict(path):
+    """ Returns a dictionary of excluded edges
+    relevant to a given vertex key in the dictionary. """
     result = None
     if path is not None:
         result = dict()
@@ -284,6 +229,7 @@ def build_exclude_dict(path):
 
 
 def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
+    """ This is the main runner of the application. """
     start_to_end = _bellman_ford(graph, start, end)
     exclude_edges = build_exclude_dict(start_to_end)
     # exclude_edges = None
@@ -298,6 +244,8 @@ def _internal(graph: GraphEL, start: VertexEL, end: VertexEL):
 
 
 def validate(graph: GraphEL, start: VertexEL, end: VertexEL):
+    """ Validates the input arguments, throws exception if
+    there are invalid arguments."""
     assert graph is not None
     assert start is not None
     assert end is not None
@@ -307,6 +255,9 @@ def validate(graph: GraphEL, start: VertexEL, end: VertexEL):
 
 
 def bellman_ford(graph: GraphEL, start: VertexEL, end: VertexEL) -> list:
+    """ Returns a tuple of two tuples of edges, the first is the
+    shortest path from start to end, and the second is the shortest
+    path from end to start."""
     result = (), ()
     try:
         validate(graph, start, end)
