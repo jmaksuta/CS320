@@ -141,18 +141,6 @@ def is_excluded(exclude_edges, v1, v2):
     return result
 
 
-def package_result(graph: GraphEL, distances: dict, paths: dict, start, end, exclude_edges):
-    """ Returns the result as a tuple of edges. """
-    result = []
-    # return the label D[u] of each vertex u
-    path_to_end = [str(start)] + paths[str(end)] + [str(end)]
-    vertices = []
-    for key in path_to_end:
-        vertices.append(VertexEL(key))
-    result = convert_list_vertices_to_edges(vertices, graph)
-    return tuple(result)
-
-
 def _bellman_ford_relaxation(dir_edge, distances, paths):
     """ Performs the Bellman-Ford relaxation operation and
     returns distances and paths. """
