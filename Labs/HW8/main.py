@@ -47,16 +47,12 @@ def generation(population, distances) -> tuple:
         
         population = replace_parents_with_valid_children(population, distances, index,
                                                          temp_last, temp_path, last, path)
-        # if valid_path(temp_last) and cost(temp_last, distances) < cost(last, distances):
-        #     population[index - 1] = temp_last
-
-        # if valid_path(temp_path) and cost(temp_path, distances) < cost(path, distances):
-        #     population[index] = temp_path
-
     return (population, distances)
 
 
 def _ga_tsp(initial_population, distances, generations) -> tuple:
+    """ Runs the ga_tsp for a number of generations and
+    returns the best path if any found. """
     population = copy.deepcopy(initial_population)
     for gen in range(0, generations):
         population, distances = generation(population, distances)
