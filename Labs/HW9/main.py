@@ -69,6 +69,8 @@ class Trie:
         """ Adds a string to the trie.
         Returns True if the key was not already in the trie and
         False if the key is a duplicate or was None or the empty string. """
+        if key is None or len(key) == 0:
+            return False
         exists = False        
         index = 0
         character = key[index]
