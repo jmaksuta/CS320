@@ -168,7 +168,14 @@ def test_add_duplicate():
 
 
 def test_add_keys():
-    pass
+    run_test("add_keys None", test_add_keys_none)
+    
+
+def test_add_keys_none():
+    keys = None
+    trie_a = Trie()
+    result = trie_a.add_keys(keys)
+    assert result == 0
 
 
 def test_remove():
@@ -181,6 +188,14 @@ def test_find():
 
 def test_partial():
     pass
+
+
+def run_test(test_name, test):
+    try:
+        test()
+        print("Test {test_name} passes.".format(test_name=test_name))
+    except AssertionError as e:
+        print("Test {test_name} failed, {error}".format(test_name=test_name, error=e))
 
 # def test_graph_files():
 #     dir_list = os.listdir("./Graph_Files")

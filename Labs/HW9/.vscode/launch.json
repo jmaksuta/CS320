@@ -8,10 +8,10 @@
             "name": "Test Main",
             "type": "debugpy",
             "request": "launch",
-            "program": "${cwd}/tsp.py",
+            "program": "${cwd}/testmain.py",
             "console": "integratedTerminal",
             "args": [
-                "DIST6-simple"
+                ""
             ]
         }
     ]
