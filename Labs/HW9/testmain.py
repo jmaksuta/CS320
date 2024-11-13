@@ -260,9 +260,39 @@ def test_find_not_exists():
     result = trie_a.find("tester")
     assert result == False
 
-
 def test_partial():
-    pass
+    run_test("partial none", test_partial_none)
+    run_test("partial empty", test_partial_empty)
+    run_test("partial not found", test_partial_not_found)
+    run_test("partial found", test_partial_found)
+
+def test_partial_none():
+    keys = ("test","tester","lester","onion","tesla","apple","orange")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.partial(None)
+    assert len(result) == 0
+
+def test_partial_empty():
+    keys = ("test","tester","lester","onion","tesla","apple","orange")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.partial("")
+    assert len(result) == len(keys)
+
+def test_partial_not_found():
+    keys = ("test","tester","lester","onion","tesla","apple","orange")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.partial("and")
+    assert len(result) == 0
+
+def test_partial_found():
+    keys = ("test","tester","lester","onion","tesla","apple","orange")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.partial("tes")
+    assert len(result) == 3
 
 
 def run_test(test_name, test):

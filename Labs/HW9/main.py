@@ -75,13 +75,15 @@ class Trie:
         # exists = False        
         index = 0
         character = key[index]
-        exists = character in self._children
+        result = character in self._children
         if not result:
             self._children[character] = Trie()
             result = True
         next = key[index + 1:]
         if len(next) > 0:
             result = (result and self._children[character].add(next))
+        else:
+            self._children[character].is_word = True
         return result
 
     def add_keys(self, keys: tuple[str, ...]) -> int:
@@ -138,13 +140,75 @@ class Trie:
         return result
 
     def partial(self, prefix: str) -> set[str]:
-        """ returns a set of all words that begin with the string in prefix.
+        """ Returns a set of all words that begin with the string in prefix.
         Returns an empty set if the prefix is not present or the prefix is None. """
+        # result = set()
+        if prefix is None or (not self.find(prefix) and len(prefix) > 0):
+            return set()
+        elif len(prefix) == 0:
+            return self._get_all_words(prefix)
+        return self._partial(prefix, "")
         # partial(prefix) returns a set of all words that begin with the string in prefix. Returns an empty set if the prefix is not present
         # or the prefix is None.
         # Note that an empty string is a valid prefix and should result in partial() returning all words in the tree.
+        # index = 0
+        # character = prefix[index]
+        # if character in self._children:
+        #     next = prefix[index + 1:]
+        #     if len(next) == 0:
+        #         # traverse down and get the words
+        #         pass
+        #     else:
+        #         result = result + self._children[character].partial(next)
+        # return result
+
+        # for key, element in self._children:
+        #     if prefix == "" or key[:len(prefix)] == prefix:
+        #         result.append(key)
+        # return set(result)
+    
+    def _partial(self, prefix: str, word) -> set[str]:
+        result = set()
+        # partial(prefix) returns a set of all words that begin with the string in prefix. Returns an empty set if the prefix is not present
+        # or the prefix is None.
+        # Note that an empty string is a valid prefix and should result in partial() returning all words in the tree.
+        index = 0
+        character = prefix[index]
+        if character in self._children:
+            word += character
+            next = prefix[index + 1:]
+            if len(next) == 0:
+                # traverse down and get the words
+                words = []
+                for key, value in self._children[character]._children.items():
+                    if value.is_word:
+                        words.append(word + key)
+                    words += value._get_words(key, word + key)
+                for value in words:
+                    result.add(value)
+            else:
+                result = result.union(self._children[character]._partial(next, word))
+        return result
+    
+    def _get_all_words(self, word):
+        result = set()
+        words = []
+        for key, value in self._children.items():
+            if value.is_word:
+                words.append(word + key)
+            words += value._get_words(key, word + key)
+            # result.union(value._get_all_words(word + key))
+        for value in words:
+            result.add(value)
+        return result
+    
+    def _get_words(self, character, word):
         result = []
-        for key, element in self._children:
-            if prefix == "" or key[:len(prefix)] == prefix:
-                result.append(key)
-        return set(result)
+        for key, value in self._children.items():
+            if value.is_word:
+                # we are at the end of a word, add to list and clear
+                result.append(word + key)
+            # if 
+            # else:
+            result += value._get_words(key, word + key)
+        return result
