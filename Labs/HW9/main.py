@@ -8,7 +8,7 @@ Dr. Partridge
 
 
 class Trie:
-    def __init__(self, is_word):
+    def __init__(self, is_word=False):
         self.is_word = False  # notes if this node is, itself, a word as well as a possible prefix
         self._children = {}  # children are a dictionary
 
