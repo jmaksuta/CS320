@@ -9,7 +9,7 @@ Dr. Partridge
 
 class Trie:
     def __init__(self, is_word=False):
-        self.is_word = False  # notes if this node is, itself, a word as well as a possible prefix
+        self._is_word = is_word  # notes if this node is, itself, a word as well as a possible prefix
         self._children = {}  # children are a dictionary
 
     def add(self, key: str) -> bool:
@@ -29,7 +29,7 @@ class Trie:
         if len(next) > 0:
             result = (result and self._children[character].add(next))
         else:
-            self._children[character].is_word = True
+            self._children[character]._is_word = True
         return result
 
     def add_keys(self, keys: tuple[str, ...]) -> int:
@@ -100,7 +100,7 @@ class Trie:
                 # traverse down and get the words
                 words = []
                 for key, value in self._children[character]._children.items():
-                    if value.is_word:
+                    if value._is_word:
                         words.append(word + key)
                     words += value._get_words(key, word + key)
                 for value in words:
@@ -113,7 +113,7 @@ class Trie:
         result = set()
         words = []
         for key, value in self._children.items():
-            if value.is_word:
+            if value._is_word:
                 words.append(word + key)
             words += value._get_words(key, word + key)
         for value in words:
@@ -123,7 +123,7 @@ class Trie:
     def _get_words(self, character, word):
         result = []
         for key, value in self._children.items():
-            if value.is_word:
+            if value._is_word:
                 result.append(word + key)
             result += value._get_words(key, word + key)
         return result

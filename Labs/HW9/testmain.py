@@ -171,6 +171,7 @@ def test_add_keys():
     run_test("add_keys None", test_add_keys_none)
     run_test("add_keys empty", test_add_keys_empty)
     run_test("add_keys duplicate", test_add_keys_duplicate)
+    run_test("add keys with a None value", test_add_keys_with_a_none)
     
 
 def test_add_keys_none():
@@ -190,6 +191,12 @@ def test_add_keys_duplicate():
     trie_a = Trie()
     result = trie_a.add_keys(keys)
     assert result == 1
+
+def test_add_keys_with_a_none():
+    keys = ("test","tes", None,"best")
+    trie_a = Trie()
+    result = trie_a.add_keys(keys)
+    assert result == 3
 
 
 def test_remove():
