@@ -9,8 +9,8 @@ Dr. Partridge
 
 class Trie:
     def __init__(self, is_word=False):
-        self._is_word = is_word  # notes if this node is, itself, a word as well as a possible prefix
-        self._children = {}  # children are a dictionary
+        self._is_word = is_word
+        self._children = {}
 
     def add(self, key: str) -> bool:
         """ Adds a string to the trie.
