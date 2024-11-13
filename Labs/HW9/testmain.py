@@ -169,6 +169,8 @@ def test_add_duplicate():
 
 def test_add_keys():
     run_test("add_keys None", test_add_keys_none)
+    run_test("add_keys empty", test_add_keys_empty)
+    run_test("add_keys duplicate", test_add_keys_duplicate)
     
 
 def test_add_keys_none():
@@ -177,13 +179,86 @@ def test_add_keys_none():
     result = trie_a.add_keys(keys)
     assert result == 0
 
+def test_add_keys_empty():
+    keys = ()
+    trie_a = Trie()
+    result = trie_a.add_keys(keys)
+    assert result == 0
+
+def test_add_keys_duplicate():
+    keys = ("test","test")
+    trie_a = Trie()
+    result = trie_a.add_keys(keys)
+    assert result == 1
+
 
 def test_remove():
-    pass
+    run_test("remove None", test_remove_none)
+    run_test("remove empty", test_remove_empty)
+    run_test("remove not found", test_remove_not_found)
+    run_test("remove key", test_remove_key)
 
+def test_remove_none():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.remove(None)
+    assert result == False
+
+def test_remove_empty():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.remove("")
+    assert result == False
+
+def test_remove_not_found():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.remove("a")
+    assert result == False
+
+def test_remove_key():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.remove(keys[0])
+    assert result == True
 
 def test_find():
-    pass
+    run_test("find None", test_find_none)
+    run_test("find empty", test_find_empty)
+    run_test("find exists", test_find_exists)
+    run_test("find not exists", test_find_not_exists)
+
+def test_find_none():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.find(None)
+    assert result == False
+
+def test_find_empty():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.find("")
+    assert result == False
+
+def test_find_exists():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.find("test")
+    assert result == False
+
+def test_find_not_exists():
+    keys = ("test")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.find("tester")
+    assert result == False
 
 
 def test_partial():

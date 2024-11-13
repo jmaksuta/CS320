@@ -69,25 +69,28 @@ class Trie:
         """ Adds a string to the trie.
         Returns True if the key was not already in the trie and
         False if the key is a duplicate or was None or the empty string. """
-        if key is None or len(key) == 0:
+        result = False
+        if key is None or len(key) == 0 or self.find(key):
             return False
-        exists = False        
+        # exists = False        
         index = 0
         character = key[index]
         exists = character in self._children
-        if not exists:
-            newtrie = Trie()
-            self._children[character] = newtrie
+        if not result:
+            self._children[character] = Trie()
+            result = True
         next = key[index + 1:]
         if len(next) > 0:
-            self._children[character].add(next)
-        return (key is not None and not exists)
+            result = (result and self._children[character].add(next))
+        return result
 
     def add_keys(self, keys: tuple[str, ...]) -> int:
         """ adds all the keys in the passed tuple to the trie.
         Returns a count of the number of keys successfully added, with 0 (zero)
         indicating that no keys were added or the tuple was empty or None.
         """
+        if keys is None or len(keys) == 0:
+            return 0
         added_count = 0
         for key in keys:
             is_added = self.add(key)
@@ -95,28 +98,44 @@ class Trie:
                 added_count += 1
         # If an element of the tuple is None,
         # it is treated as a duplicate string (already in the trie, so no action required).
-        return 0
+        return added_count
 
     def remove(self, key: str) -> bool:
         """ Removes a key. Returns True if the key was present and
         False if the key was not present or was None or the empty string. """
+        
+        if key is None or len(key) == 0 or not self.find(key):
+            return False
+        result = False
+
         exists = False
-        if key in self._children:
-            exists = True
-            del self._children[key]
-        return (exists and key is not None)
+        index = 0
+        character = key[index]
+        result = character in self._children
+        if not exists:
+            newtrie = Trie()
+            self._children[character] = newtrie
+        next = key[index + 1:]
+        
+        if len(next) > 0:
+            result = result and self._children[character].add(next)
+        return result #(exists and key is not None)
 
     def find(self, key: str) -> bool:
         """ Returns True if the word is in the trie and
         False if the word is not in the trie or the word is None or the empty string. """
-        first_letter = key[:1]
-        exists = first_letter in self._children
-        if exists:
-            key, elem = self._children # finish this. 2024-11-11 John
-        for trie in self._children:
-            exists = key in self._children
+        result = False
+        if key is None or len(key) == 0:
+            return False
+        index = 0
+        character = key[index]
+        result = character in self._children
+        if result:
+            next = key[index + 1:]
+            if len(next) > 0:
+                result = result and self._children[character].find(next)
         # find(word) returns True if the word is in the trie and False if the word is not in the trie or the word is None or the empty string.
-        return (key is not None and not exists)
+        return result
 
     def partial(self, prefix: str) -> set[str]:
         """ returns a set of all words that begin with the string in prefix.
