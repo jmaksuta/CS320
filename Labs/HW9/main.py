@@ -55,14 +55,19 @@ class Trie:
         exists = False
         index = 0
         character = key[index]
-        result = character in self._children
-        if not exists:
-            newtrie = Trie()
-            self._children[character] = newtrie
+        exists = character in self._children
+        
         next = key[index + 1:]
         
         if len(next) > 0:
-            result = result and self._children[character].add(next)
+            result = exists and self._children[character].remove(next)
+        # if the key exists and there are no other nodes.
+        if exists:
+            if self._children[character]._is_word:
+                self._is_word = False
+                result = True
+            if len(self._children[character]._children) == 0:
+                del self._children[character]
         return result
 
     def find(self, key: str) -> bool:
@@ -73,11 +78,13 @@ class Trie:
             return False
         index = 0
         character = key[index]
-        result = character in self._children
-        if result:
+        exists = character in self._children
+        if exists:
             next = key[index + 1:]
             if len(next) > 0:
-                result = result and self._children[character].find(next)
+                result = exists and self._children[character].find(next)
+            else:
+                result = self._children[character]._is_word
         return result
 
     def partial(self, prefix: str) -> set[str]:

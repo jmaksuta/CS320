@@ -128,6 +128,7 @@ def test_add():
     test_add_none()
     test_add_empty()
     test_add_duplicate()
+    run_test("test add existing", test_add_existing)
 
 
 def test_add_none():
@@ -166,6 +167,14 @@ def test_add_duplicate():
     except AssertionError as e:
         print("Test {test_name} failed, {error}".format(test_name=test_name, error=e))
 
+def test_add_existing():
+    trie_a = Trie()
+    test_value_a = "test"
+    test_value_b = "tes"
+    result_a = trie_a.add(test_value_a)
+    result_b = trie_a.add(test_value_b)
+    assert (result_a == True and result_b == True)
+
 
 def test_add_keys():
     run_test("add_keys None", test_add_keys_none)
@@ -203,7 +212,7 @@ def test_add_keys_with_smaller():
     keys = ("test","tes", None,"best")
     trie_a = Trie()
     result = trie_a.add_keys(keys)
-    assert result == 2
+    assert result == 3
 
 
 def test_remove():
@@ -211,6 +220,8 @@ def test_remove():
     run_test("remove empty", test_remove_empty)
     run_test("remove not found", test_remove_not_found)
     run_test("remove key", test_remove_key)
+    run_test("remove key keep prefix", test_remove_key_keep_prefix)
+    run_test("remove key keep prefix2", test_remove_key_keep_prefix2)
 
 def test_remove_none():
     keys = ("test")
@@ -234,11 +245,33 @@ def test_remove_not_found():
     assert result == False
 
 def test_remove_key():
-    keys = ("test")
+    keys = ("test",)
     trie_a = Trie()
     count = trie_a.add_keys(keys)
     result = trie_a.remove(keys[0])
     assert result == True
+
+def test_remove_key_keep_prefix():
+    keys = ("test","tes","ankle","taper")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.remove(keys[0])
+    key2_exists = trie_a.find(keys[1])
+    key3_exists = trie_a.find(keys[2])
+    key4_exists = trie_a.find(keys[3])
+    other_keys_exist = (key2_exists and key3_exists and key4_exists)
+    assert (result and other_keys_exist)
+
+def test_remove_key_keep_prefix2():
+    keys = ("tes","test","ankle","taper")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.remove(keys[0])
+    key2_exists = trie_a.find(keys[1])
+    key3_exists = trie_a.find(keys[2])
+    key4_exists = trie_a.find(keys[3])
+    other_keys_exist = (key2_exists and key3_exists and key4_exists)
+    assert (result and other_keys_exist)
 
 def test_find():
     run_test("find None", test_find_none)
