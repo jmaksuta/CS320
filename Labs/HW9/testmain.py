@@ -72,7 +72,7 @@ def lists_are_equal(actual, expected):
     return result
 
 
-def get_list_from_file(file_name):
+def get_list_from_file(file_name, start_index=0):
     result = []
     with open(file_name, 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
@@ -85,7 +85,22 @@ def get_list_from_file(file_name):
             else:
                 result.append(row)
 
-    return result
+    return result[start_index:]
+
+def get_word_list_from_file(file_name, start_index=0):
+    result = []
+    with open(file_name, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+
+        for row in reader:
+            if len(row) == 0:
+                result.append("")
+            elif row[0] == "None":
+                result.append(None)
+            else:
+                result.append(row[0])
+
+    return result[start_index:]
 
 def get_row_from_csv_file(file_name, index):
     result = None
@@ -108,6 +123,10 @@ def make_full_fields(length):
     field = ((False,) * length,) * length
     return field
 
+def make_word_list(filename, start_index):
+    word_list = get_word_list_from_file(filename, start_index)
+    return tuple(word_list)
+
 def run_tests():
     # If graph is None, return an empty tuple (())
     # If start is None, return an empty tuple (())
@@ -118,6 +137,7 @@ def run_tests():
     test_remove()
     test_find()
     test_partial()
+    test_large_list()
 
 
 def test_none_value_args():
@@ -256,11 +276,12 @@ def test_remove_key_keep_prefix():
     trie_a = Trie()
     count = trie_a.add_keys(keys)
     result = trie_a.remove(keys[0])
+    key1_exists = trie_a.find(keys[0])
     key2_exists = trie_a.find(keys[1])
     key3_exists = trie_a.find(keys[2])
     key4_exists = trie_a.find(keys[3])
     other_keys_exist = (key2_exists and key3_exists and key4_exists)
-    assert (result and other_keys_exist)
+    assert (result and not key1_exists and other_keys_exist)
 
 def test_remove_key_keep_prefix2():
     keys = ("tes","test","ankle","taper")
@@ -348,6 +369,24 @@ def test_partial_for():
     count = trie_a.add_keys(keys)
     result = trie_a.partial("for")
     assert len(result) == 4
+
+def test_large_list():
+    run_test("large list aba", test_large_list_aba)
+    run_test("large list abs", test_large_list_abs)
+
+def test_large_list_aba():
+    word_list = make_word_list("./IndividualTests/LargeWordList.csv",2)
+    trie_a = Trie()
+    count = trie_a.add_keys(word_list)
+    result_a = trie_a.partial("aba")
+    assert len(result_a) == 3
+
+def test_large_list_abs():
+    word_list = make_word_list("./IndividualTests/LargeWordList.csv",2)
+    trie_a = Trie()
+    count = trie_a.add_keys(word_list)
+    result_b = trie_a.partial("abs")
+    assert len(result_b) == 11
 
 
 def run_test(test_name, test):

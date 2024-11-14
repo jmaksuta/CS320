@@ -63,10 +63,12 @@ class Trie:
             result = exists and self._children[character].remove(next)
         # if the key exists and there are no other nodes.
         if exists:
-            if self._children[character]._is_word:
-                self._is_word = False
+            if len(next) == 0 and self._children[character]._is_word:
+                self._children[character]._is_word = False
                 result = True
-            if len(self._children[character]._children) == 0:
+            has_no_children = (len(self._children[character]._children) == 0)
+            is_not_word = not self._children[character]._is_word
+            if is_not_word and has_no_children:
                 del self._children[character]
         return result
 
@@ -97,6 +99,9 @@ class Trie:
         return self._partial(prefix, "")
     
     def _partial(self, prefix: str, word) -> set[str]:
+        """ Returns list of words matching the prefix.
+        This is a main internal method which retains
+        a word list as tail recursion accumulator. """
         result = set()
         index = 0
         character = prefix[index]
@@ -119,6 +124,8 @@ class Trie:
         return result
     
     def _get_all_words(self, word):
+        """ Returns all the words in the Trie structure.
+        Used for special case empty prefix"""
         result = set()
         words = []
         for key, value in self._children.items():
@@ -130,6 +137,7 @@ class Trie:
         return result
     
     def _get_words(self, character, word):
+        """ Returns all the words in a child dictionary as a list. """
         result = []
         for key, value in self._children.items():
             if value._is_word:
