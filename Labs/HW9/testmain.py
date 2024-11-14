@@ -312,6 +312,7 @@ def test_partial():
     run_test("partial empty", test_partial_empty)
     run_test("partial not found", test_partial_not_found)
     run_test("partial found", test_partial_found)
+    run_test("partial 'for'", test_partial_for)
 
 def test_partial_none():
     keys = ("test","tester","lester","onion","tesla","apple","orange")
@@ -340,6 +341,13 @@ def test_partial_found():
     count = trie_a.add_keys(keys)
     result = trie_a.partial("tes")
     assert len(result) == 3
+
+def test_partial_for():
+    keys = ("for","fork","form","forget")
+    trie_a = Trie()
+    count = trie_a.add_keys(keys)
+    result = trie_a.partial("for")
+    assert len(result) == 4
 
 
 def run_test(test_name, test):

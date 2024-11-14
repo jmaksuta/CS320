@@ -90,7 +90,7 @@ class Trie:
     def partial(self, prefix: str) -> set[str]:
         """ Returns a set of all words that begin with the string in prefix.
         Returns an empty set if the prefix is not present or the prefix is None. """
-        if prefix is None or (not self.find(prefix) and len(prefix) > 0):
+        if prefix is None:  # or (not self.find(prefix) and len(prefix) > 0):
             return set()
         elif len(prefix) == 0:
             return self._get_all_words(prefix)
@@ -104,6 +104,8 @@ class Trie:
             word += character
             next = prefix[index + 1:]
             if len(next) == 0:
+                if self._children[character]._is_word:
+                    result.add(word)
                 # traverse down and get the words
                 words = []
                 for key, value in self._children[character]._children.items():
